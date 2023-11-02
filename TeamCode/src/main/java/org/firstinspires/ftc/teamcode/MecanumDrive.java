@@ -50,7 +50,8 @@ public final class MecanumDrive {
         // drive model parameters
         //TODO Step 5 Set value of inPerTick after running ForwardPushTest
         //TODO Step 14 Make value of inPerTick accurate after running LocalizationTest
-        public double inPerTick = 0;
+        //public double inPerTick = 0;
+        public double inPerTick = 0.03550296; //After Step 5 : 11/2
 
         //TODO Step 6 (Only for DriveEncoder Localizer) Set value of lateralInPerTick after running LateralPushTest
         //TODO Step 8 (Only for DeadWheel Localizer) Set value of lateralInPerTick after running LateralRampLogger
