@@ -33,7 +33,6 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -199,18 +198,19 @@ public final class MecanumDrive {
         }
 
         //TODO Step 1 Drive Classes : get basic hardware configured. Update motor names to what is used in robot configuration
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
-        rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
-        //TODO End Step 1
+        leftFront = hardwareMap.get(DcMotorEx.class, "LF");
+        leftBack = hardwareMap.get(DcMotorEx.class, "LB");
+        rightBack = hardwareMap.get(DcMotorEx.class, "RB");
+        rightFront = hardwareMap.get(DcMotorEx.class, "RF");
+        //TODO End Step 1 - Completed 11/1
 
         //TODO Step 4.1 Run MecanumDirectionDebugger Tuning OpMode to set motor direction correctly
         //Uncomment the lines for which the motorDirection need to be reversed to ensure all motors run forward in test
-        //leftFront.setDirection(DcMotorEx.Direction.REVERSE);
-        //leftBack.setDirection(DcMotorEx.Direction.REVERSE);
-        rightFront.setDirection(DcMotorEx.Direction.REVERSE);
-        rightBack.setDirection(DcMotorEx.Direction.REVERSE);
+        leftFront.setDirection(DcMotorEx.Direction.REVERSE);
+        leftBack.setDirection(DcMotorEx.Direction.REVERSE);
+        //rightFront.setDirection(DcMotorEx.Direction.REVERSE);
+        //rightBack.setDirection(DcMotorEx.Direction.REVERSE);
+        //TODO Make the same update in ThreeDeadWheelLocalizer() function if using 3-wheel odo. Search for Step 4.2
         //TODO Make the same update in DriveLocalizer() function. Search for Step 4.2
         //TODO End Step 4.1
 
@@ -222,9 +222,10 @@ public final class MecanumDrive {
 
         imu = hardwareMap.get(IMU.class, "imu");
         //TODO Step 2 : Update direction of IMU by updating orientation of Driver Hub below
+        // using reference: https://ftc-docs.firstinspires.org/en/latest/programming_resources/imu/imu.html?highlight=imu#orthogonal-mounting
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP, // Change to UP / DOWN / LEFT / RIGHT / FORWARD / BACKWARD as in robot
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD)); //Change to UP / DOWN / LEFT / RIGHT / FORWARD / BACKWARD
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, // Change to UP / DOWN / LEFT / RIGHT / FORWARD / BACKWARD as in robot
+                RevHubOrientationOnRobot.UsbFacingDirection.UP)); //Change to UP / DOWN / LEFT / RIGHT / FORWARD / BACKWARD
         imu.initialize(parameters);
         //TODO End Step 2
 
@@ -232,13 +233,13 @@ public final class MecanumDrive {
 
         //TODO Step 3: Specify how the robot should track its position
         //Comment this line if NOT using Drive Encoder localization
-        localizer = new DriveLocalizer();
+        //localizer = new DriveLocalizer();
         //Uncomment next line if using Two Dead Wheel Localizer and also check TwoDeadWheelLocalizer.java for Step 3.1
         //localizer = new TwoDeadWheelLocalizer(hardwareMap, imu, PARAMS.inPerTick)
 
         //Uncomment next line if using Three Dead Wheel Localizer and also check ThreeDeadWheelLocalizer.java for Step 3.1
-        //localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick)
-        //TODO End Step 3
+        localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick);
+        //TODO End Step 3 - Completed 11/1
 
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }

@@ -23,7 +23,9 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
 
     public static Params PARAMS = new Params();
 
-    public final Encoder par0, par1, perp;
+    //public final Encoder par0, par1, perp;
+    public final Encoder encoderLeft, encoderRight, encoderAux;
+
 
     public final double inPerTick;
 
@@ -31,13 +33,17 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
 
     public ThreeDeadWheelLocalizer(HardwareMap hardwareMap, double inPerTick) {
         //TODO Step 3.1 : Update hardware configuration names for dead wheel encoders
-        par0 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "par0")));
-        par1 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "par1")));
-        perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "perp")));
+        //par0 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "par0")));
+        //par1 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "par1")));
+        //perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "perp")));
 
-        lastPar0Pos = par0.getPositionAndVelocity().position;
-        lastPar1Pos = par1.getPositionAndVelocity().position;
-        lastPerpPos = perp.getPositionAndVelocity().position;
+        encoderLeft = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "LB")));
+        encoderRight = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "RB")));
+        encoderAux = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "RF")));
+
+        lastPar0Pos = encoderLeft.getPositionAndVelocity().position;
+        lastPar1Pos = encoderRight.getPositionAndVelocity().position;
+        lastPerpPos = encoderAux.getPositionAndVelocity().position;
 
         this.inPerTick = inPerTick;
 
@@ -45,9 +51,9 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
     }
 
     public Twist2dDual<Time> update() {
-        PositionVelocityPair par0PosVel = par0.getPositionAndVelocity();
-        PositionVelocityPair par1PosVel = par1.getPositionAndVelocity();
-        PositionVelocityPair perpPosVel = perp.getPositionAndVelocity();
+        PositionVelocityPair par0PosVel = encoderLeft.getPositionAndVelocity();
+        PositionVelocityPair par1PosVel = encoderRight.getPositionAndVelocity();
+        PositionVelocityPair perpPosVel = encoderAux.getPositionAndVelocity();
 
         int par0PosDelta = par0PosVel.position - lastPar0Pos;
         int par1PosDelta = par1PosVel.position - lastPar1Pos;
