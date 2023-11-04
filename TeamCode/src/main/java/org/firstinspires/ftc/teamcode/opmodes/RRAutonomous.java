@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.opmodes;
 
 import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.SECONDS;
 
@@ -40,19 +40,20 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 import java.util.List;
 
 /**
- * FTC WIRES Autonomous Example for only vision detection using tensorflow and park
+ * RR Autonomous Example for only vision detection using tensorflow and park
  */
-@Autonomous(name = "FTC Wires Autonomous Mode", group = "00-Autonomous", preselectTeleOp = "FTC Wires TeleOp")
-public class FTCWiresAutonomous extends LinearOpMode {
+@Autonomous(name = "RR Autonomous Mode", group = "00-Autonomous", preselectTeleOp = "RR TeleOp")
+public class RRAutonomous extends LinearOpMode {
 
-    public static String TEAM_NAME = "EDIT TEAM NAME"; //TODO: Enter team Name
-    public static int TEAM_NUMBER = 0; //TODO: Enter team Number
+    public static String TEAM_NAME = "RoboRaiders"; //TODO: Enter team Name
+    public static int TEAM_NUMBER = 21386; //TODO: Enter team Number
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 

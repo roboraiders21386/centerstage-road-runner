@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
@@ -6,6 +6,8 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.MecanumDrive;
+import org.firstinspires.ftc.teamcode.TankDrive;
 import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
 
 /**
@@ -13,12 +15,12 @@ import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
  *
  */
 
-@TeleOp(name = "FTC Wires TeleOp", group = "00-Teleop")
-public class FTCWiresTeleOpMode extends LinearOpMode {
+@TeleOp(name = "RR TeleOp", group = "00-Teleop")
+public class RRTeleOpMode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         double SLOW_DOWN_FACTOR = 0.5; //TODO Adjust to driver comfort
-        telemetry.addData("Initializing FTC Wires (ftcwires.org) TeleOp adopted for Team:","TEAM NUMBER");
+        telemetry.addData("Initializing TeleOp  for Team:","21386");
         telemetry.update();
 
         if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
@@ -27,7 +29,7 @@ public class FTCWiresTeleOpMode extends LinearOpMode {
             waitForStart();
 
             while (opModeIsActive()) {
-                telemetry.addData("Running FTC Wires (ftcwires.org) TeleOp Mode adopted for Team:","TEAM NUMBER");
+                telemetry.addData("Running TeleOp Mode adopted for Team:","21386");
                 drive.setDrivePowers(new PoseVelocity2d(
                         new Vector2d(
                                 -gamepad1.left_stick_y * SLOW_DOWN_FACTOR,
