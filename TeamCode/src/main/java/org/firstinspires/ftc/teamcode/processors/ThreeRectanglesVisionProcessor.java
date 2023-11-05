@@ -12,7 +12,7 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
-public class FirstVisionProcessor implements VisionProcessor {
+public class ThreeRectanglesVisionProcessor implements VisionProcessor {
 
         public Rect rectLeft = new Rect(110, 42, 40, 40);
         public Rect rectMiddle = new Rect(160, 42, 40, 40);
@@ -55,8 +55,12 @@ public class FirstVisionProcessor implements VisionProcessor {
         @Override
         public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight,
                                 float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
-                Paint selectedPaint = new Paint(); selectedPaint.setColor(Color.RED); selectedPaint.setStyle(Paint.Style.STROKE); selectedPaint.setStrokeWidth(scaleCanvasDensity * 4);
-                Paint nonSelectedPaint = new Paint(selectedPaint); nonSelectedPaint.setColor(Color.GREEN);
+                Paint selectedPaint = new Paint();
+                selectedPaint.setColor(Color.RED);
+                selectedPaint.setStyle(Paint.Style.STROKE);
+                selectedPaint.setStrokeWidth(scaleCanvasDensity * 4);
+                Paint nonSelectedPaint = new Paint(selectedPaint);
+                nonSelectedPaint.setColor(Color.GREEN);
                 android.graphics.Rect drawRectangleLeft = makeGraphicsRect(rectLeft, scaleBmpPxToCanvasPx);
                 android.graphics.Rect drawRectangleMiddle = makeGraphicsRect(rectMiddle, scaleBmpPxToCanvasPx);
                 android.graphics.Rect drawRectangleRight = makeGraphicsRect(rectRight,scaleBmpPxToCanvasPx);
