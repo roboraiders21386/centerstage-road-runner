@@ -224,7 +224,7 @@ public final class MecanumDrive {
         //TODO Step 2 : Update direction of IMU by updating orientation of Driver Hub below
         // using reference: https://ftc-docs.firstinspires.org/en/latest/programming_resources/imu/imu.html?highlight=imu#orthogonal-mounting
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, // Change to UP / DOWN / LEFT / RIGHT / FORWARD / BACKWARD as in robot
+                RevHubOrientationOnRobot.LogoFacingDirection.LEFT, // Change to UP / DOWN / LEFT / RIGHT / FORWARD / BACKWARD as in robot
                 RevHubOrientationOnRobot.UsbFacingDirection.UP)); //Change to UP / DOWN / LEFT / RIGHT / FORWARD / BACKWARD
         imu.initialize(parameters);
         //TODO End Step 2
