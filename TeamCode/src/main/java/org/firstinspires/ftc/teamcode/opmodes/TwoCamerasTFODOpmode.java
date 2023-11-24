@@ -51,8 +51,14 @@ import java.util.List;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
 @TeleOp(name = "Concept: Two Cameras TensorFlow Object Detection", group = "Concept")
-@Disabled
+
 public class TwoCamerasTFODOpmode extends LinearOpMode {
+
+    private enum DETECTED_PIXEL_POS{
+        left_pixel,
+        center_pixel,
+        right_pixel
+    }
 
     /**
      * Variables used for switching cameras.
@@ -92,9 +98,9 @@ public class TwoCamerasTFODOpmode extends LinearOpMode {
                 telemetry.update();
 
                 // Save CPU resources; can resume streaming when needed.
-                if (gamepad1.dpad_down) {
+                if (gamepad2.dpad_down) {
                     visionPortal.stopStreaming();
-                } else if (gamepad1.dpad_up) {
+                } else if (gamepad2.dpad_up) {
                     visionPortal.resumeStreaming();
                 }
 
@@ -152,6 +158,16 @@ public class TwoCamerasTFODOpmode extends LinearOpMode {
         List<Recognition> currentRecognitions = tfod.getRecognitions();
         telemetry.addData("# Objects Detected", currentRecognitions.size());
 
+        if(currentRecognitions.size() > 0) {
+            if (visionPortal.getActiveCamera().equals(webcam1)) {
+                telemetry.addData("Left Detected!", "");
+            } else if (visionPortal.getActiveCamera().equals(webcam2)) {
+                telemetry.addData("Right Detected!", "");
+            }
+        }else{
+            telemetry.addData("Center Detected!", "");
+        }
+
         // Step through the list of recognitions and display info for each one.
         for (Recognition recognition : currentRecognitions) {
             double x = (recognition.getLeft() + recognition.getRight()) / 2;
@@ -172,8 +188,8 @@ public class TwoCamerasTFODOpmode extends LinearOpMode {
         if (visionPortal.getCameraState() == CameraState.STREAMING) {
             // If the left bumper is pressed, use Webcam 1.
             // If the right bumper is pressed, use Webcam 2.
-            boolean newLeftBumper = gamepad1.left_bumper;
-            boolean newRightBumper = gamepad1.right_bumper;
+            boolean newLeftBumper = gamepad2.left_bumper;
+            boolean newRightBumper = gamepad2.right_bumper;
             if (newLeftBumper && !oldLeftBumper) {
                 visionPortal.setActiveCamera(webcam1);
             } else if (newRightBumper && !oldRightBumper) {
