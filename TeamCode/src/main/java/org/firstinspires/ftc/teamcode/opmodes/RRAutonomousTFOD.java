@@ -40,22 +40,17 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.teamcode.CustomOpenCVPipeline;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.processors.SplitAvgVisionPipeline;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.List;
 
 /**
  * RR Autonomous Example for only vision detection using tensorflow and park
  */
-@Autonomous(name = "RR Autonomous Mode", group = "00-Autonomous", preselectTeleOp = "RR TeleOp")
-public class RRAutonomous extends LinearOpMode {
+@Autonomous(name = "RR Auto Tensor Flow", group = "00-Autonomous", preselectTeleOp = "RR TeleOp")
+public class RRAutonomousTFOD extends LinearOpMode {
 
     public static String TEAM_NAME = "RoboRaiders"; //TODO: Enter team Name
     public static int TEAM_NUMBER = 21386; //TODO: Enter team Number
@@ -66,12 +61,6 @@ public class RRAutonomous extends LinearOpMode {
     private TfodProcessor tfod;
     private VisionPortal visionPortal;
 
-    //Vision pipeline related - 11/24
-    private CustomOpenCVPipeline visionPipeline;
-    private OpenCvCamera camera;
-    private String webcamName = "Webcam 1";
-
-
     //Define and declare Robot Starting Locations
     public enum START_POSITION{
         BLUE_LEFT,
@@ -79,13 +68,7 @@ public class RRAutonomous extends LinearOpMode {
         RED_LEFT,
         RED_RIGHT
     }
-
-    public enum ALLIANCE{
-        BLUE,
-        RED
-      }
     public static START_POSITION startPosition;
-    public static ALLIANCE alliance;
 
     public enum IDENTIFIED_SPIKE_MARK_LOCATION {
         LEFT,
@@ -94,22 +77,15 @@ public class RRAutonomous extends LinearOpMode {
     }
     public static IDENTIFIED_SPIKE_MARK_LOCATION identifiedSpikeMarkLocation = IDENTIFIED_SPIKE_MARK_LOCATION.LEFT;
 
-    public String whichSide = "LEFT";
-
     @Override
     public void runOpMode() throws InterruptedException {
-
-        //Create the vision pipeline object - 11/24
-        visionPipeline = new CustomOpenCVPipeline(telemetry);
 
         //Key Pay inputs to selecting Starting Position of robot
         selectStartingPosition();
         telemetry.addData("Selected Starting Position", startPosition);
 
         //Activate Camera Vision that uses TensorFlow for pixel detection
-        //initTfod();
-        visionPipeline.setAlliancePipe(String.valueOf(alliance));
-        initVision(visionPipeline);
+        initTfod();
 
         // Wait for the DS start button to be touched.
         telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
@@ -121,18 +97,14 @@ public class RRAutonomous extends LinearOpMode {
             telemetry.addData("Selected Starting Position", startPosition);
 
             //Run Vuforia Tensor Flow and keep watching for the identifier in the Signal Cone.
-            //runTfodTensorFlow();
-            //telemetry.addData("Vision identified Parking Location", identifiedSpikeMarkLocation);
-            telemetry.addData("Vision identified Parking Location", visionPipeline.getSide());
+            runTfodTensorFlow();
+            telemetry.addData("Vision identified Parking Location", identifiedSpikeMarkLocation);
             telemetry.update();
         }
 
         //Game Play Button  is pressed
         if (opModeIsActive() && !isStopRequested()) {
-
             //Build parking trajectory based on last detected target by vision
-            whichSide = visionPipeline.getSide();
-            camera.stopStreaming();
             runAutonoumousMode();
         }
     }   // end runOpMode()
@@ -157,16 +129,16 @@ public class RRAutonomous extends LinearOpMode {
         switch (startPosition) {
             case BLUE_LEFT:
                 drive = new MecanumDrive(hardwareMap, initPose);
-                switch(whichSide){
-                    case "LEFT":
+                switch(identifiedSpikeMarkLocation){
+                    case LEFT:
                         dropPurplePixelPose = new Pose2d(26, 8, Math.toRadians(0));
                         dropYellowPixelPose = new Pose2d(23, 36, Math.toRadians(-90));
                         break;
-                    case "MIDDLE":
+                    case MIDDLE:
                         dropPurplePixelPose = new Pose2d(30, 3, Math.toRadians(0));
                         dropYellowPixelPose = new Pose2d(30, 36,  Math.toRadians(-90));
                         break;
-                    case "RIGHT":
+                    case RIGHT:
                         dropPurplePixelPose = new Pose2d(30, -9, Math.toRadians(-45));
                         dropYellowPixelPose = new Pose2d(37, 36, Math.toRadians(-90));
                         break;
@@ -178,18 +150,16 @@ public class RRAutonomous extends LinearOpMode {
 
             case RED_RIGHT:
                 drive = new MecanumDrive(hardwareMap, initPose);
-                telemetry.addData("CAme here printing whichSide", whichSide);
-                telemetry.update();
-                switch(whichSide){
-                    case "LEFT":
+                switch(identifiedSpikeMarkLocation){
+                    case LEFT:
                         dropPurplePixelPose = new Pose2d(30, 9, Math.toRadians(45));
                         dropYellowPixelPose = new Pose2d(21, -36, Math.toRadians(90));
                         break;
-                    case "MIDDLE":
+                    case MIDDLE:
                         dropPurplePixelPose = new Pose2d(30, -3, Math.toRadians(0));
                         dropYellowPixelPose = new Pose2d(29, -36,  Math.toRadians(90));
                         break;
-                    case "RIGHT":
+                    case RIGHT:
                         dropPurplePixelPose = new Pose2d(26, -8, Math.toRadians(0));
                         dropYellowPixelPose = new Pose2d(37, -36, Math.toRadians(90));
                         break;
@@ -249,7 +219,6 @@ public class RRAutonomous extends LinearOpMode {
         }
 
         //Move robot to dropPurplePixel based on identified Spike Mark Location
-        telemetry.addData("Move robot to dropPurplePixel based on identified Spike Mark Location: ", whichSide);
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
                         .strafeToLinearHeading(moveBeyondTrussPose.position, moveBeyondTrussPose.heading)
@@ -260,8 +229,6 @@ public class RRAutonomous extends LinearOpMode {
         safeWaitSeconds(1);
 
         //Move robot to midwayPose1
-        telemetry.addData("Move robot to midwayPose1: ", whichSide);
-
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
                         .strafeToLinearHeading(midwayPose1.position, midwayPose1.heading)
@@ -289,8 +256,6 @@ public class RRAutonomous extends LinearOpMode {
         safeWaitSeconds(waitSecondsBeforeDrop);
 
         //Move robot to midwayPose2 and to dropYellowPixelPose
-        telemetry.addData("Move robot to midwayPose2 and to dropYellowPixelPose: ", whichSide);
-
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
                         .setReversed(true)
@@ -302,8 +267,6 @@ public class RRAutonomous extends LinearOpMode {
         safeWaitSeconds(1);
 
         //Move robot to park in Backstage
-        telemetry.addData("Move robot to park in Backstage: ", whichSide);
-
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
                         .strafeToLinearHeading(parkPose.position, parkPose.heading)
@@ -328,22 +291,18 @@ public class RRAutonomous extends LinearOpMode {
             telemetry.addData("    Red Right  ", "(A / X)");
             if(gamepad1.x){
                 startPosition = START_POSITION.BLUE_LEFT;
-                alliance = ALLIANCE.BLUE;
                 break;
             }
             if(gamepad1.y){
                 startPosition = START_POSITION.BLUE_RIGHT;
-                alliance = ALLIANCE.BLUE;
                 break;
             }
             if(gamepad1.b){
                 startPosition = START_POSITION.RED_LEFT;
-                alliance = ALLIANCE.RED;
                 break;
             }
             if(gamepad1.a){
                 startPosition = START_POSITION.RED_RIGHT;
-                alliance = ALLIANCE.RED;
                 break;
             }
             telemetry.update();
@@ -427,27 +386,5 @@ public class RRAutonomous extends LinearOpMode {
         }   // end for() loop
 
     }   // end method runTfodTensorFlow()
-
-    private void initVision(CustomOpenCVPipeline visionPipeline) {
-        // Initiate Camera on INIT.
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, webcamName), cameraMonitorViewId);
-        camera.setPipeline(visionPipeline);
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
-            @Override
-            public void onOpened()
-            {
-                //camera.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_LEFT);  this was used in PowerPlay
-                //camera.startStreaming(800, 448, OpenCvCameraRotation.UPRIGHT);  // this was used by ColorBlobAuto
-                camera.startStreaming(640, 360, OpenCvCameraRotation.UPRIGHT);
-                while (!visionPipeline.hasProcessedFrame) sleep(50);
-
-            }
-
-            @Override
-            public void onError(int errorCode) {}
-        });
-    }  // end of initVision()
 
 }   // end class

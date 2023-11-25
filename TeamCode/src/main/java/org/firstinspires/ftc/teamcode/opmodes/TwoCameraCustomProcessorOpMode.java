@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes;
 
 import android.util.Size;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.processors.DrawRectangleProcessor;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 // Uses custom vision processor  for 2 camera camera / 1 rectangle each
+@Disabled
 @TeleOp(name = "Concept: Double Cameras", group = "Concept")
 public class TwoCameraCustomProcessorOpMode extends LinearOpMode {
     private DrawRectangleProcessor visionProcessor;

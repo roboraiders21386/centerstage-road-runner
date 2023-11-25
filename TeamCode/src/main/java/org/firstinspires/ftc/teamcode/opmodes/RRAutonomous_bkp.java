@@ -34,6 +34,7 @@ import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.SECONDS;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -42,7 +43,6 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.CustomOpenCVPipeline;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.processors.SplitAvgVisionPipeline;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -54,8 +54,9 @@ import java.util.List;
 /**
  * RR Autonomous Example for only vision detection using tensorflow and park
  */
-@Autonomous(name = "RR Autonomous Mode", group = "00-Autonomous", preselectTeleOp = "RR TeleOp")
-public class RRAutonomous extends LinearOpMode {
+@Disabled
+@Autonomous(name = "RR Autonomous Mode- bkp", group = "00-Autonomous", preselectTeleOp = "RR TeleOp")
+public class RRAutonomous_bkp extends LinearOpMode {
 
     public static String TEAM_NAME = "RoboRaiders"; //TODO: Enter team Name
     public static int TEAM_NUMBER = 21386; //TODO: Enter team Number
@@ -133,6 +134,7 @@ public class RRAutonomous extends LinearOpMode {
             //Build parking trajectory based on last detected target by vision
             whichSide = visionPipeline.getSide();
             camera.stopStreaming();
+
             runAutonoumousMode();
         }
     }   // end runOpMode()
@@ -178,8 +180,6 @@ public class RRAutonomous extends LinearOpMode {
 
             case RED_RIGHT:
                 drive = new MecanumDrive(hardwareMap, initPose);
-                telemetry.addData("CAme here printing whichSide", whichSide);
-                telemetry.update();
                 switch(whichSide){
                     case "LEFT":
                         dropPurplePixelPose = new Pose2d(30, 9, Math.toRadians(45));
@@ -249,7 +249,6 @@ public class RRAutonomous extends LinearOpMode {
         }
 
         //Move robot to dropPurplePixel based on identified Spike Mark Location
-        telemetry.addData("Move robot to dropPurplePixel based on identified Spike Mark Location: ", whichSide);
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
                         .strafeToLinearHeading(moveBeyondTrussPose.position, moveBeyondTrussPose.heading)
@@ -260,8 +259,6 @@ public class RRAutonomous extends LinearOpMode {
         safeWaitSeconds(1);
 
         //Move robot to midwayPose1
-        telemetry.addData("Move robot to midwayPose1: ", whichSide);
-
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
                         .strafeToLinearHeading(midwayPose1.position, midwayPose1.heading)
@@ -289,8 +286,6 @@ public class RRAutonomous extends LinearOpMode {
         safeWaitSeconds(waitSecondsBeforeDrop);
 
         //Move robot to midwayPose2 and to dropYellowPixelPose
-        telemetry.addData("Move robot to midwayPose2 and to dropYellowPixelPose: ", whichSide);
-
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
                         .setReversed(true)
@@ -302,8 +297,6 @@ public class RRAutonomous extends LinearOpMode {
         safeWaitSeconds(1);
 
         //Move robot to park in Backstage
-        telemetry.addData("Move robot to park in Backstage: ", whichSide);
-
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
                         .strafeToLinearHeading(parkPose.position, parkPose.heading)

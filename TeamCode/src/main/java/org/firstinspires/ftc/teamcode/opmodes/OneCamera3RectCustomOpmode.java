@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.processors.ThreeRectanglesVisionProcessor;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 // Uses custom vision processor  for single camera / 3 rectangles
+@Disabled
 @Autonomous(name = "Concept: Single Camera", group = "Concept")
 public class OneCamera3RectCustomOpmode extends OpMode {
     private ThreeRectanglesVisionProcessor visionProcessor;
