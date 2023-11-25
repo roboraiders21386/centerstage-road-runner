@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.processors;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.processors.ColorBlobDetector;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -11,10 +10,9 @@ import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class CustomOpenCVPipeline extends OpenCvPipeline {
+public class VisionOpenCVPipeline extends OpenCvPipeline {
     //backlog of frames to average out to reduce noise
     Telemetry telemetry;
     public String whichSide;
@@ -27,11 +25,11 @@ public class CustomOpenCVPipeline extends OpenCvPipeline {
     public static double strictLowS = 140;
     public static double strictHighS = 255;
 
-    public CustomOpenCVPipeline() {
+    public VisionOpenCVPipeline() {
         frameList = new ArrayList<>();
     }
 
-    public CustomOpenCVPipeline(Telemetry t) { telemetry = t; frameList = new ArrayList<>();}
+    public VisionOpenCVPipeline(Telemetry t) { telemetry = t; frameList = new ArrayList<>();}
 
     Mat YCbCr = new Mat();
     Mat region1_Cb, region2_Cb, region3_Cb;
@@ -236,10 +234,21 @@ public class CustomOpenCVPipeline extends OpenCvPipeline {
             strictHighHSV = new Scalar(0, 255, 255);
         }else{
             allianceColor = new Scalar(0.0, 0.0, 255.0);
-            lowHSV = new Scalar(200, 75, 75);
-            highHSV = new Scalar(255, 100, 100);
-            strictLowHSV = new Scalar(200, 100, 100);
-            strictHighHSV = new Scalar(255, 100, 100);
+            //got from discord
+            //lowHSV =  new Scalar(94, 80, 2);
+            //highHSV=  new Scalar(126, 255, 255);
+            //lowHSV = new Scalar(200, 75, 75);
+            //highHSV = new Scalar(255, 100, 100);
+            // looks like these are working for BLUE
+            lowHSV = new Scalar(100, 100, 100);
+            highHSV = new Scalar(160, 255, 255);
+            //strictLowHSV = new Scalar(200, 100, 100);
+            //strictHighHSV = new Scalar(255, 100, 100);
+            //strictLowHSV =  new Scalar(94, 80, 2);
+            //strictHighHSV = new Scalar(126, 255, 255);
+            // looks like these are working for BLUE - keep the same as low/high for now.
+            strictLowHSV = new Scalar(100, 100, 100);
+            strictHighHSV = new Scalar(160, 255, 255);
         }
     }  // end of setAlliancePipe
 

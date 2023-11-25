@@ -41,7 +41,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.teamcode.CustomOpenCVPipeline;
+import org.firstinspires.ftc.teamcode.processors.VisionOpenCVPipeline;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
@@ -68,7 +68,7 @@ public class RRAutonomous_bkp extends LinearOpMode {
     private VisionPortal visionPortal;
 
     //Vision pipeline related - 11/24
-    private CustomOpenCVPipeline visionPipeline;
+    private VisionOpenCVPipeline visionPipeline;
     private OpenCvCamera camera;
     private String webcamName = "Webcam 1";
 
@@ -101,7 +101,7 @@ public class RRAutonomous_bkp extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         //Create the vision pipeline object - 11/24
-        visionPipeline = new CustomOpenCVPipeline(telemetry);
+        visionPipeline = new VisionOpenCVPipeline(telemetry);
 
         //Key Pay inputs to selecting Starting Position of robot
         selectStartingPosition();
@@ -421,7 +421,7 @@ public class RRAutonomous_bkp extends LinearOpMode {
 
     }   // end method runTfodTensorFlow()
 
-    private void initVision(CustomOpenCVPipeline visionPipeline) {
+    private void initVision(VisionOpenCVPipeline visionPipeline) {
         // Initiate Camera on INIT.
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, webcamName), cameraMonitorViewId);

@@ -40,9 +40,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.teamcode.CustomOpenCVPipeline;
+import org.firstinspires.ftc.teamcode.processors.VisionOpenCVPipeline;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.processors.SplitAvgVisionPipeline;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -67,7 +66,7 @@ public class RRAutonomous extends LinearOpMode {
     private VisionPortal visionPortal;
 
     //Vision pipeline related - 11/24
-    private CustomOpenCVPipeline visionPipeline;
+    private VisionOpenCVPipeline visionPipeline;
     private OpenCvCamera camera;
     private String webcamName = "Webcam 1";
 
@@ -100,7 +99,7 @@ public class RRAutonomous extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         //Create the vision pipeline object - 11/24
-        visionPipeline = new CustomOpenCVPipeline(telemetry);
+        visionPipeline = new VisionOpenCVPipeline(telemetry);
 
         //Key Pay inputs to selecting Starting Position of robot
         selectStartingPosition();
@@ -318,14 +317,14 @@ public class RRAutonomous extends LinearOpMode {
         telemetry.clearAll();
         //******select start pose*****
         while(!isStopRequested()){
-            telemetry.addData("Initializing FTC Wires (ftcwires.org) Autonomous adopted for Team:",
+            telemetry.addData("Initializing Autonomous adopted for Team:",
                     TEAM_NAME, " ", TEAM_NUMBER);
             telemetry.addData("---------------------------------------","");
-            telemetry.addData("Select Starting Position using XYAB on Logitech (or ▢ΔOX on Playstayion) on gamepad 1:","");
-            telemetry.addData("    Blue Left   ", "(X / ▢)");
-            telemetry.addData("    Blue Right ", "(Y / Δ)");
-            telemetry.addData("    Red Left    ", "(B / O)");
-            telemetry.addData("    Red Right  ", "(A / X)");
+            telemetry.addData("Select Starting Position using XYAB on Logitech Gamepad 1:","");
+            telemetry.addData("    Blue Left   ", "(X)");
+            telemetry.addData("    Blue Right ", "(Y)");
+            telemetry.addData("    Red Left    ", "(B)");
+            telemetry.addData("    Red Right  ", "(A)");
             if(gamepad1.x){
                 startPosition = START_POSITION.BLUE_LEFT;
                 alliance = ALLIANCE.BLUE;
@@ -428,7 +427,7 @@ public class RRAutonomous extends LinearOpMode {
 
     }   // end method runTfodTensorFlow()
 
-    private void initVision(CustomOpenCVPipeline visionPipeline) {
+    private void initVision(VisionOpenCVPipeline visionPipeline) {
         // Initiate Camera on INIT.
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, webcamName), cameraMonitorViewId);

@@ -4,8 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.CustomOpenCVPipeline;
-import org.firstinspires.ftc.teamcode.processors.ColorBlobDetector;
+import org.firstinspires.ftc.teamcode.processors.VisionOpenCVPipeline;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -23,7 +22,10 @@ public class CustomOpenCVAuto extends LinearOpMode {
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, webcamName), cameraMonitorViewId);
 
         //ColorBlobDetector detector = new ColorBlobDetector(telemetry);
-        CustomOpenCVPipeline detector = new CustomOpenCVPipeline(telemetry);
+        VisionOpenCVPipeline detector = new VisionOpenCVPipeline(telemetry);
+
+        //TEst for RED or BLUE
+        detector.setAlliancePipe("BLUE");
         camera.setPipeline(detector);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
