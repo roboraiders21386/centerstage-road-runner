@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.DualNum;
@@ -10,16 +10,18 @@ import com.acmerobotics.roadrunner.ftc.FlightRecorder;
 import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
 import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;
 import com.acmerobotics.roadrunner.ftc.RawEncoder;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @Config
 public final class ThreeDeadWheelLocalizer implements Localizer {
     public static class Params {
         //TODO Step 11.1 : Update values of par0YTicks, part1YTicks, perpXTicks from AngularRampLogger
-        public double par0YTicks = 0.0; // y position of the first parallel encoder (in tick units)
-        public double par1YTicks = 1.0; // y position of the second parallel encoder (in tick units)
-        public double perpXTicks = 0.0; // x position of the perpendicular encoder (in tick units)
+        public double par0YTicks = -11702.617787599618; //0.0; // y position of the first parallel encoder (in tick units)
+        public double par1YTicks = 11636.31641072519; //1.0; // y position of the second parallel encoder (in tick units)
+        public double perpXTicks = -9064.884736187201; //0.0; // x position of the perpendicular encoder (in tick units)
     }
 
     public static Params PARAMS = new Params();
@@ -41,6 +43,11 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
         encoderLeft = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "LF")));
         encoderRight = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "RF")));
         encoderAux = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "LB")));
+
+        encoderLeft.setDirection(DcMotorEx.Direction.REVERSE);
+
+        //reserving the direction of the perpedicular encoder
+        encoderAux.setDirection(DcMotorSimple.Direction.REVERSE);
 
         lastPar0Pos = encoderLeft.getPositionAndVelocity().position;
         lastPar1Pos = encoderRight.getPositionAndVelocity().position;

@@ -41,7 +41,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDir
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.processors.VisionOpenCVPipeline;
-import org.firstinspires.ftc.teamcode.MecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.MecanumDrive;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -51,13 +51,13 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.List;
 
 /**
- * RR Autonomous Example for only vision detection using tensorflow and park
+ * RR Autonomous
  */
-@Autonomous(name = "RR Autonomous Mode", group = "00-Autonomous", preselectTeleOp = "RR TeleOp")
+@Autonomous(name = "RR Auto (roadrunner 1.8)  - ", group = "00-Autonomous", preselectTeleOp = "RR TeleOp")
 public class RRAutonomous extends LinearOpMode {
 
-    public static String TEAM_NAME = "RoboRaiders"; //TODO: Enter team Name
-    public static int TEAM_NUMBER = 21386; //TODO: Enter team Number
+    public static String TEAM_NAME = "RoboRaiders";
+    public static int TEAM_NUMBER = 21386;
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
@@ -70,6 +70,7 @@ public class RRAutonomous extends LinearOpMode {
     private OpenCvCamera camera;
     private String webcamName = "Webcam 1";
 
+    public MecanumDrive drive;
 
     //Define and declare Robot Starting Locations
     public enum START_POSITION{
@@ -94,6 +95,12 @@ public class RRAutonomous extends LinearOpMode {
     public static IDENTIFIED_SPIKE_MARK_LOCATION identifiedSpikeMarkLocation = IDENTIFIED_SPIKE_MARK_LOCATION.LEFT;
 
     public String whichSide = "LEFT";
+
+    //Initialize any other Pose2d's as desired
+    Pose2d initPose; // Starting Pose
+    Pose2d moveBeyondTrussPose;
+    Pose2d dropPurplePixelPose;
+    Pose2d midwayPose1, midwayPose1a, intakeStack, midwayPose2, dropYellowPixelPose,parkPose;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -132,132 +139,45 @@ public class RRAutonomous extends LinearOpMode {
             //Build parking trajectory based on last detected target by vision
             whichSide = visionPipeline.getSide();
             camera.stopStreaming();
+
+            //initPose = new Pose2d(0, 0, 0); // Starting Pose
+
+
+
             runAutonoumousMode();
         }
     }   // end runOpMode()
 
     public void runAutonoumousMode() {
         //Initialize Pose2d as desired
-        Pose2d initPose = new Pose2d(0, 0, 0); // Starting Pose
-        Pose2d moveBeyondTrussPose = new Pose2d(0,0,0);
-        Pose2d dropPurplePixelPose = new Pose2d(0, 0, 0);
-        Pose2d midwayPose1 = new Pose2d(0,0,0);
-        Pose2d midwayPose1a = new Pose2d(0,0,0);
-        Pose2d intakeStack = new Pose2d(0,0,0);
-        Pose2d midwayPose2 = new Pose2d(0,0,0);
-        Pose2d dropYellowPixelPose = new Pose2d(0, 0, 0);
-        Pose2d parkPose = new Pose2d(0,0, 0);
-        double waitSecondsBeforeDrop = 0;
-        MecanumDrive drive = new MecanumDrive(hardwareMap, initPose);
 
         initPose = new Pose2d(0, 0, Math.toRadians(0)); //Starting pose
         moveBeyondTrussPose = new Pose2d(15,0,0);
+        dropPurplePixelPose = new Pose2d(0, 0, 0);
+        midwayPose1 = new Pose2d(0,0,0);
+        midwayPose1a = new Pose2d(0,0,0);
+        intakeStack = new Pose2d(0,0,0);
+        midwayPose2 = new Pose2d(0,0,0);
+        dropYellowPixelPose = new Pose2d(0, 0, 0);
+        parkPose = new Pose2d(0,0, 0);
+        double waitSecondsBeforeDrop = 0;
 
-        switch (startPosition) {
-            case BLUE_LEFT:
-                drive = new MecanumDrive(hardwareMap, initPose);
-                switch(whichSide){
-                    case "LEFT":
-                        dropPurplePixelPose = new Pose2d(26, 8, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(23, 36, Math.toRadians(-90));
-                        break;
-                    case "MIDDLE":
-                        dropPurplePixelPose = new Pose2d(30, 3, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(30, 36,  Math.toRadians(-90));
-                        break;
-                    case "RIGHT":
-                        dropPurplePixelPose = new Pose2d(30, -9, Math.toRadians(-45));
-                        dropYellowPixelPose = new Pose2d(37, 36, Math.toRadians(-90));
-                        break;
-                }
-                midwayPose1 = new Pose2d(14, 13, Math.toRadians(-45));
-                waitSecondsBeforeDrop = 2; //TODO: Adjust time to wait for alliance partner to move from board
-                parkPose = new Pose2d(8, 30, Math.toRadians(-90));
-                break;
+        //Initialize drive
+        MecanumDrive drive = new MecanumDrive(hardwareMap, initPose);
 
-            case RED_RIGHT:
-                drive = new MecanumDrive(hardwareMap, initPose);
-                telemetry.addData("CAme here printing whichSide", whichSide);
-                telemetry.update();
-                switch(whichSide){
-                    case "LEFT":
-                        dropPurplePixelPose = new Pose2d(30, 9, Math.toRadians(45));
-                        dropYellowPixelPose = new Pose2d(21, -36, Math.toRadians(90));
-                        break;
-                    case "MIDDLE":
-                        dropPurplePixelPose = new Pose2d(30, -3, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(29, -36,  Math.toRadians(90));
-                        break;
-                    case "RIGHT":
-                        dropPurplePixelPose = new Pose2d(26, -8, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(37, -36, Math.toRadians(90));
-                        break;
-                }
-                midwayPose1 = new Pose2d(14, -13, Math.toRadians(45));
-                waitSecondsBeforeDrop = 2; //TODO: Adjust time to wait for alliance partner to move from board
-                parkPose = new Pose2d(8, -30, Math.toRadians(90));
-                break;
 
-            case BLUE_RIGHT:
-                drive = new MecanumDrive(hardwareMap, initPose);
-                switch(identifiedSpikeMarkLocation){
-                    case LEFT:
-                        dropPurplePixelPose = new Pose2d(27, 9, Math.toRadians(45));
-                        dropYellowPixelPose = new Pose2d(27, 86, Math.toRadians(-90));
-                        break;
-                    case MIDDLE:
-                        dropPurplePixelPose = new Pose2d(30, -3, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(34, 86, Math.toRadians(-90));
-                        break;
-                    case RIGHT:
-                        dropPurplePixelPose = new Pose2d(26, -8, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(43, 86, Math.toRadians(-90));
-                        break;
-                }
-                midwayPose1 = new Pose2d(8, -8, Math.toRadians(0));
-                midwayPose1a = new Pose2d(18, -18, Math.toRadians(-90));
-                intakeStack = new Pose2d(52, -19,Math.toRadians(-90));
-                midwayPose2 = new Pose2d(52, 62, Math.toRadians(-90));
-                waitSecondsBeforeDrop = 2; //TODO: Adjust time to wait for alliance partner to move from board
-                parkPose = new Pose2d(50, 84, Math.toRadians(-90));
-                break;
 
-            case RED_LEFT:
-                drive = new MecanumDrive(hardwareMap, initPose);
-                switch(identifiedSpikeMarkLocation){
-                    case LEFT:
-                        dropPurplePixelPose = new Pose2d(26, 8, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(37, -86, Math.toRadians(90));
-                        break;
-                    case MIDDLE:
-                        dropPurplePixelPose = new Pose2d(30, -3, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(29, -86, Math.toRadians(90));
-                        break;
-                    case RIGHT:
-                        dropPurplePixelPose = new Pose2d(27, -9, Math.toRadians(-45));
-                        dropYellowPixelPose = new Pose2d(21, -86, Math.toRadians(90));
-                        break;
-                }
-                midwayPose1 = new Pose2d(8, 8, Math.toRadians(0));
-                midwayPose1a = new Pose2d(18, 18, Math.toRadians(90));
-                intakeStack = new Pose2d(52, 19,Math.toRadians(90));
-                midwayPose2 = new Pose2d(52, -62, Math.toRadians(90));
-                waitSecondsBeforeDrop = 2; //TODO: Adjust time to wait for alliance partner to move from board
-                parkPose = new Pose2d(50, -84, Math.toRadians(90));
-                break;
-        }
 
         //Move robot to dropPurplePixel based on identified Spike Mark Location
-        telemetry.addData("Move robot to dropPurplePixel based on identified Spike Mark Location: ", whichSide);
+        //telemetry.addData("Move robot to dropPurplePixel based on identified Spike Mark Location: ", whichSide);
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
                         .strafeToLinearHeading(moveBeyondTrussPose.position, moveBeyondTrussPose.heading)
-                        .strafeToLinearHeading(dropPurplePixelPose.position, dropPurplePixelPose.heading)
                         .build());
 
         //TODO : Code to drop Purple Pixel on Spike Mark
         safeWaitSeconds(1);
-
+/*
         //Move robot to midwayPose1
         telemetry.addData("Move robot to midwayPose1: ", whichSide);
 
@@ -290,6 +210,7 @@ public class RRAutonomous extends LinearOpMode {
         //Move robot to midwayPose2 and to dropYellowPixelPose
         telemetry.addData("Move robot to midwayPose2 and to dropYellowPixelPose: ", whichSide);
 
+
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
                         .setReversed(true)
@@ -308,7 +229,9 @@ public class RRAutonomous extends LinearOpMode {
                         .strafeToLinearHeading(parkPose.position, parkPose.heading)
                         //.splineToLinearHeading(parkPose,0)
                         .build());
-    }
+        */
+
+    } //end of runAutonomousMode()
 
 
     //Method to select starting position using X, Y, A, B buttons on gamepad
@@ -350,6 +273,9 @@ public class RRAutonomous extends LinearOpMode {
         telemetry.clearAll();
     }
 
+    public void setRedRightPos(){
+
+    }
     //method to wait safely with stop button working if needed. Use this instead of sleep
     public void safeWaitSeconds(double time) {
         ElapsedTime timer = new ElapsedTime(SECONDS);
@@ -358,74 +284,7 @@ public class RRAutonomous extends LinearOpMode {
         }
     }
 
-    /**
-     * Initialize the TensorFlow Object Detection processor.
-     */
-    private void initTfod() {
 
-        // Create the TensorFlow processor the easy way.
-        tfod = TfodProcessor.easyCreateWithDefaults();
-
-        // Create the vision portal the easy way.
-        if (USE_WEBCAM) {
-            visionPortal = VisionPortal.easyCreateWithDefaults(
-                hardwareMap.get(WebcamName.class, "Webcam 1"), tfod);
-        } else {
-            visionPortal = VisionPortal.easyCreateWithDefaults(
-                BuiltinCameraDirection.BACK, tfod);
-        }
-
-        // Set confidence threshold for TFOD recognitions, at any time.
-        tfod.setMinResultConfidence(0.095f);
-
-    }   // end method initTfod()
-
-    /**
-     * Add telemetry about TensorFlow Object Detection (TFOD) recognitions.
-     */
-    private void runTfodTensorFlow() {
-
-        List<Recognition> currentRecognitions = tfod.getRecognitions();
-        telemetry.addData("# Objects Detected", currentRecognitions.size());
-
-        //Camera placed between Left and Right Spike Mark on RED_LEFT and BLUE_LEFT If pixel not visible, assume Right spike Mark
-        if (startPosition == START_POSITION.RED_LEFT || startPosition == START_POSITION.BLUE_LEFT) {
-            identifiedSpikeMarkLocation = IDENTIFIED_SPIKE_MARK_LOCATION.RIGHT;
-        } else { //RED_RIGHT or BLUE_RIGHT
-            identifiedSpikeMarkLocation = IDENTIFIED_SPIKE_MARK_LOCATION.LEFT;
-        }
-
-            // Step through the list of recognitions and display info for each one.
-        for (Recognition recognition : currentRecognitions) {
-            double x = (recognition.getLeft() + recognition.getRight()) / 2 ;
-            double y = (recognition.getTop()  + recognition.getBottom()) / 2 ;
-
-            telemetry.addData(""," ");
-            telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
-            telemetry.addData("- Position", "%.0f / %.0f", x, y);
-            telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
-
-            if (startPosition == START_POSITION.RED_LEFT || startPosition == START_POSITION.BLUE_LEFT) {
-                if (recognition.getLabel() == "Pixel") {
-                    if (x < 200) {
-                        identifiedSpikeMarkLocation = IDENTIFIED_SPIKE_MARK_LOCATION.LEFT;
-                    } else {
-                        identifiedSpikeMarkLocation = IDENTIFIED_SPIKE_MARK_LOCATION.MIDDLE;
-                    }
-                }
-            } else { //RED_RIGHT or BLUE_RIGHT
-                if (recognition.getLabel() == "Pixel") {
-                    if (x < 200) {
-                        identifiedSpikeMarkLocation = IDENTIFIED_SPIKE_MARK_LOCATION.MIDDLE;
-                    } else {
-                        identifiedSpikeMarkLocation = IDENTIFIED_SPIKE_MARK_LOCATION.RIGHT;
-                    }
-                }
-            }
-
-        }   // end for() loop
-
-    }   // end method runTfodTensorFlow()
 
     private void initVision(VisionOpenCVPipeline visionPipeline) {
         // Initiate Camera on INIT.
