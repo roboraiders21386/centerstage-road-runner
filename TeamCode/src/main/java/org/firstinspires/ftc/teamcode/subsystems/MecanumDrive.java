@@ -60,12 +60,13 @@ public final class MecanumDrive {
         //TODO Step 6 (Only for DriveEncoder Localizer) Set value of lateralInPerTick after running LateralPushTest
         //TODO Step 8 (Only for DeadWheel Localizer) Set value of lateralInPerTick after running LateralRampLogger
         //TODO Step 14 Make value of lateralInPerTick accurate after running LocalizationTest
-        public double lateralInPerTick = 0.01387644451932522; //1;
+        public double lateralInPerTick = 0.01387644451932522; //Dec 9th version because it works
+        // 1414750910155064800; Dec 10th //1 Before Dec 9th
 
         //TODO Step 10 (Only for DriveEncoder Localizer) Set value of trackWidthTicks after running AngularRampLogger
         //TODO Step 11 (Only for DeadWheel Localizer) Set value of trackWidthTicks after running AngularRampLogger
         //      Go to Step 11.1 in Three or Two DeadWheelLocalizer and updated  values of par0YTicks, part1YTicks, perpXTicks
-        public double trackWidthTicks = 28156.85310706782; //0;
+        public double trackWidthTicks = 28735.42170550196; //The current one is Dec 10th //28156.85310706782 Dec 9th//0;
 
         // feedforward parameters (in tick units)
         //TODO Step 7 (Only for DeadWheel Localizer) Set value for kS and KV after running ForwardRampLogger
@@ -73,9 +74,9 @@ public final class MecanumDrive {
 
         //Updated 12/9/2023
         //public double kS = 0;
-        public double kS = 0.9920696529432735;
+        public double kS = 0.874336221832388; //0.9920696529432735; Dec 9th
         //public double kV = 0;
-        public double kV = 0.00010724664334916354;
+        public double kV = 0.00010838184390951066; //0.00010724664334916354; Dec 9th
 
         //TODO Step 12 Set value of kA after running ManualFeedforwardTuner. In this emperical process update value in increments of 0.0001
         public double kA = 0;
