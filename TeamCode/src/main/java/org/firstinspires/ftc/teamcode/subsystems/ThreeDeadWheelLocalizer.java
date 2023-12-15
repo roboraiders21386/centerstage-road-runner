@@ -19,9 +19,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public final class ThreeDeadWheelLocalizer implements Localizer {
     public static class Params {
         //TODO Step 11.1 : Update values of par0YTicks, part1YTicks, perpXTicks from AngularRampLogger
-        public double par0YTicks = -11400.633579319896; //-11702.617787599618; //0.0; // y position of the first parallel encoder (in tick units)
-        public double par1YTicks = -11400.633579319896; //11636.31641072519; //1.0; // y position of the second parallel encoder (in tick units)
-        public double perpXTicks = -11400.633579319896; //-9064.884736187201; //0.0; // x position of the perpendicular encoder (in tick units)
+        public double par0YTicks = -11683.65964102291; // -11400.633579319896; //-11702.617787599618; //0.0; // y position of the first parallel encoder (in tick units)
+        public double par1YTicks = 11588.93126366356; //-11400.633579319896; //11636.31641072519; //1.0; // y position of the second parallel encoder (in tick units)
+        public double perpXTicks = 4442.675984876408; // -11400.633579319896; //-9064.884736187201; //0.0; // x position of the perpendicular encoder (in tick units)
     }
 
     public static Params PARAMS = new Params();
@@ -47,7 +47,7 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
         encoderLeft.setDirection(DcMotorEx.Direction.REVERSE);
 
         //reserving the direction of the perpedicular encoder
-        encoderAux.setDirection(DcMotorSimple.Direction.REVERSE);
+        //encoderAux.setDirection(DcMotorEx.Direction.REVERSE);
 
         lastPar0Pos = encoderLeft.getPositionAndVelocity().position;
         lastPar1Pos = encoderRight.getPositionAndVelocity().position;

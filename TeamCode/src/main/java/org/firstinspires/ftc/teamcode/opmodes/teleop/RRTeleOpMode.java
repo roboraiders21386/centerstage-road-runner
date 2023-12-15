@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDrive;
 
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
@@ -45,11 +47,25 @@ public class RRTeleOpMode extends LinearOpMode {
         boolean LowerLeft;
         boolean RaiseRight;
 
+        int armUpPosition = -300;
+        int liftUpPosition = -150;
+        int armDownPosition = 300;
+        int liftDownPosition = 150;
+
         pixel = hardwareMap.get(TouchSensor.class, "pixel");
         INTAKE3 = hardwareMap.get(CRServo.class, "INTAKE3");
         INTAKE4 = hardwareMap.get(CRServo.class, "INTAKE4");
         wrist = hardwareMap.get(Servo.class, "WRIST");
         drone = hardwareMap.get(Servo.class, "droneLauncher");
+        DcMotor armMotor = hardwareMap.dcMotor.get("Arm");
+        DcMotor liftMotor = hardwareMap.dcMotor.get("LIFT");
+        armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setTargetPosition(armDownPosition);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftMotor.setTargetPosition(armDownPosition);
+        liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         double SLOW_DOWN_FACTOR = 0.5; //TODO Adjust to driver comfort
         telemetry.addData("Initializing TeleOp  for Team:", "21386");
@@ -93,10 +109,12 @@ public class RRTeleOpMode extends LinearOpMode {
                 }
 
                 if(gamepad1.x){
-                    drone.setDirection(Servo.Direction.REVERSE);
+                    drone.setDirection(Servo.Direction.FORWARD);
                     drone.setPosition(1);
                     telemetry.addData("Launching", "Drone");
                     telemetry.update();
+                    sleep(1000);
+                    drone.setPosition(0);
                 }
 
                 drive.updatePoseEstimate();
@@ -130,6 +148,55 @@ public class RRTeleOpMode extends LinearOpMode {
                 INTAKE3.setPower(0);
                 INTAKE4.setPower(0);
 
+                if (gamepad1.b) {
+                    armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    armMotor.setTargetPosition(1100);
+                    telemetry.addData("Up: ", armMotor.getCurrentPosition());
+                    liftMotor.setTargetPosition(1394);
+                    armMotor.setPower(1);
+                    liftMotor.setPower(1);
+                }
+                if (gamepad1.start) { //this resets the arm to attach the hook
+                    armMotor.setTargetPosition(0);
+                    liftMotor.setTargetPosition(0);
+                    wrist.setPosition(0);
+                    armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION); //to be tested
+                    armMotor.setPower(-0.75);
+                }
+
+                if (gamepad1.dpad_up) {
+                    armMotor.setTargetPosition(armMotor.getCurrentPosition()+50);
+                    armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    armMotor.setPower(1);
+                    telemetry.addData("Up: ", armMotor.getCurrentPosition());
+                }
+                else if (gamepad1.dpad_down) {
+                    armMotor.setTargetPosition(armMotor.getCurrentPosition()-50);
+                    armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    armMotor.setPower(-0.75);
+                    telemetry.addData("Down: ", armMotor.getCurrentPosition());
+                } else {armMotor.setPower(0);}
+                if (gamepad1.dpad_left) {
+                    liftMotor.setTargetPosition(armMotor.getCurrentPosition()+50);
+                    liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    liftMotor.setPower(1);
+                } else if (gamepad1.dpad_right) {
+                    liftMotor.setTargetPosition(armMotor.getCurrentPosition()-50);
+                    liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    liftMotor.setPower(-1);
+                }
+
+                double position = armMotor.getCurrentPosition();
+                double position2 = liftMotor.getCurrentPosition();
+                double desiredPosition = armMotor.getTargetPosition();
+                double desiredPosition2 = liftMotor.getTargetPosition();
+                telemetry.addData("Encoder Position", position);
+                telemetry.addData("Encoder Position", position2);
+                telemetry.addData("Desired Position", desiredPosition);
+                telemetry.addData("Desired Position", desiredPosition2);
+                telemetry.update();
 
                 //telemetry.addData("LF Encoder", drive.leftFront.getCurrentPosition());
                 //telemetry.addData("LB Encoder", drive.leftBack.getCurrentPosition());

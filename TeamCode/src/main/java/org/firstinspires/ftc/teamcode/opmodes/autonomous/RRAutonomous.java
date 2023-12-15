@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
 import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.SECONDS;
 
@@ -141,9 +141,6 @@ public class RRAutonomous extends LinearOpMode {
             camera.stopStreaming();
 
             //initPose = new Pose2d(0, 0, 0); // Starting Pose
-
-
-
             runAutonoumousMode();
         }
     }   // end runOpMode()
@@ -164,7 +161,9 @@ public class RRAutonomous extends LinearOpMode {
 
         //Initialize drive
         MecanumDrive drive = new MecanumDrive(hardwareMap, initPose);
-
+        initPose = new Pose2d(0, 0, Math.toRadians(0)); //Starting pose
+        moveBeyondTrussPose = new Pose2d(15,0,0);
+        dropPurplePixelPose = new Pose2d(22, 0, Math.toRadians(70));
 
 
 
@@ -173,6 +172,7 @@ public class RRAutonomous extends LinearOpMode {
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
                         .strafeToLinearHeading(moveBeyondTrussPose.position, moveBeyondTrussPose.heading)
+                        .strafeToLinearHeading(dropPurplePixelPose.position, dropPurplePixelPose.heading)
                         .build());
 
         //TODO : Code to drop Purple Pixel on Spike Mark
