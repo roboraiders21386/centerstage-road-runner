@@ -44,10 +44,10 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
         //encoderAux
         perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "LB")));
 
-        par0.setDirection(DcMotorEx.Direction.REVERSE);
+        // Since LF and LB are reversed in the motors, should we reverse the corresponding encoders as well?
+        //par0.setDirection(DcMotorEx.Direction.REVERSE);
+        //perp.setDirection(DcMotorEx.Direction.REVERSE);
 
-        //reserving the direction of the perpedicular encoder
-        //encoderAux.setDirection(DcMotorEx.Direction.REVERSE);
 
         lastPar0Pos = par0.getPositionAndVelocity().position;
         lastPar1Pos = par1.getPositionAndVelocity().position;

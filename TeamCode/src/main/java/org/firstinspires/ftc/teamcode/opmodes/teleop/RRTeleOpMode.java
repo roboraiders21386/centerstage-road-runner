@@ -64,7 +64,7 @@ public class RRTeleOpMode extends LinearOpMode {
         liftMotor.setTargetPosition(armDownPosition);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        double SLOW_DOWN_FACTOR = 0.5; //TODO Adjust to driver comfort
+        double SLOW_DOWN_FACTOR = 0.75; //TODO Adjust to driver comfort
         telemetry.addData("Initializing TeleOp  for Team:", "21386");
         telemetry.update();
 
