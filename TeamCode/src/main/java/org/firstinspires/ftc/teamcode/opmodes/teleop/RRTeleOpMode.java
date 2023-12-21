@@ -24,9 +24,7 @@ public class RRTeleOpMode extends LinearOpMode {
 
     private TouchSensor pixel;
 
-    private CRServo INTAKE3; //moving wheels
-    private CRServo INTAKE4;
-
+    private Servo INTAKE; //moving wheels
     private Servo wrist;
     private Servo drone;
 
@@ -53,8 +51,7 @@ public class RRTeleOpMode extends LinearOpMode {
         int liftDownPosition = 150;
 
         pixel = hardwareMap.get(TouchSensor.class, "pixel");
-        INTAKE3 = hardwareMap.get(CRServo.class, "INTAKE3");
-        INTAKE4 = hardwareMap.get(CRServo.class, "INTAKE4");
+        INTAKE = hardwareMap.get(Servo.class, "INTAKE");
         wrist = hardwareMap.get(Servo.class, "WRIST");
         drone = hardwareMap.get(Servo.class, "droneLauncher");
         DcMotor armMotor = hardwareMap.dcMotor.get("Arm");
@@ -86,8 +83,7 @@ public class RRTeleOpMode extends LinearOpMode {
                 ));
 
                 if (pixel.isPressed()) {
-                    INTAKE3.setPower(0); //stops the intake servos
-                    INTAKE4.setPower(0);
+                    INTAKE.setPosition(0); //stops the intake servos
                     telemetry.addData("Pixel", "Detected");
                     telemetry.update();
                 }
@@ -120,17 +116,17 @@ public class RRTeleOpMode extends LinearOpMode {
                 drive.updatePoseEstimate();
 
                 if (gamepad1.right_bumper) {
-                    INTAKE3.setDirection(CRServo.Direction.REVERSE);
-                    INTAKE4.setDirection(CRServo.Direction.FORWARD);
-                    INTAKE4.setPower(0.75);
-                    INTAKE3.setPower(0.75);
+                    INTAKE.setDirection(Servo.Direction.REVERSE);
+                    INTAKE.setPosition(0.75);
                     sleep(300);
                 }
 
                 if (gamepad1.left_bumper) {
-                    INTAKE3.setDirection(CRServo.Direction.FORWARD);
-                    INTAKE4.setDirection(CRServo.Direction.REVERSE);
+                    INTAKE.setDirection(Servo.Direction.FORWARD);
 
+                    INTAKE.setPosition(0);
+
+                    /*
                     if (pixel.isPressed()) {
                         INTAKE3.setPower(0); //stops the intake servos
                         INTAKE4.setPower(0);
@@ -142,11 +138,12 @@ public class RRTeleOpMode extends LinearOpMode {
                         telemetry.addData("Intake", "Running!");
                         telemetry.update();
                         sleep(300);
-                    }
+                    }`
+                     */
                 }
 
-                INTAKE3.setPower(0);
-                INTAKE4.setPower(0);
+                INTAKE.setPosition(0);
+
 
                 if (gamepad1.b) {
                     armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);

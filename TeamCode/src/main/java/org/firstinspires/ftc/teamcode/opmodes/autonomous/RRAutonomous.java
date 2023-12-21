@@ -150,7 +150,7 @@ public class RRAutonomous extends LinearOpMode {
 
         initPose = new Pose2d(0, 0, Math.toRadians(0)); //Starting pose
         moveBeyondTrussPose = new Pose2d(15,0,0);
-        dropPurplePixelPose = new Pose2d(0, 0, 0);
+        dropPurplePixelPose = new Pose2d(15, 40, 0);
         midwayPose1 = new Pose2d(0,0,0);
         midwayPose1a = new Pose2d(0,0,0);
         intakeStack = new Pose2d(0,0,0);
