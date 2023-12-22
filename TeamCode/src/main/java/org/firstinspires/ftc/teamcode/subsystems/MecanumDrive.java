@@ -33,6 +33,7 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -58,7 +59,7 @@ public final class MecanumDrive {
 
         // On 12/14 88990 ticks  48 inch
         //on 12/20 -166406.5 and 96 in
-        public double inPerTick = -0.0005769; //  0.00053939; // this is theretical value 0.02224460305; //0.0010563407; //After Step 5 : 11/2
+        public double inPerTick = 0; //0.00065857172; //  0.00053939; // this is theretical value 0.02224460305; //0.0010563407; //After Step 5 : 11/2
 
         //TODO Step 6 (Only for DriveEncoder Localizer) Set value of lateralInPerTick after running LateralPushTest
         //TODO Step 8 (Only for DeadWheel Localizer) Set value of lateralInPerTick after running LateralRampLogger
@@ -77,9 +78,9 @@ public final class MecanumDrive {
         //TODO Step 9 (Only for DriveEncoder Localizer) Set value for kS and kV after running AngularRampLogger
 
         //Updated 12/9/2023
-        public double kS = 0.8507004158989862;
+        public double kS = 0; //0.8507004158989862;
         //public double kS = 0.9710801295869098; // dec 10 0.874336221832388; //0.9920696529432735; Dec 9th
-        public double kV = -0.00012019244039050385;
+        public double kV = 0;//-0.00012019244039050385;
         //public double kV = 0.00011159472823501846; // dec 10 0.00010838184390951066; //0.00010724664334916354; Dec 9th
 
         //TODO Step 12 Set value of kA after running ManualFeedforwardTuner. In this emperical process update value in increments of 0.0001
@@ -147,10 +148,19 @@ public final class MecanumDrive {
 
             //TODO Step 4.2 Run MecanumDirectionDebugger Tuning OpMode to set motor direction correctly
             //Uncomment the lines for which the motorDirection need to be reversed to ensure all motors run forward in test
+            //For tuning and auto
+            /*
+            leftFront.setDirection(DcMotorEx.Direction.FORWARD);
+            leftBack.setDirection(DcMotorEx.Direction.FORWARD);
+            rightBack.setDirection(DcMotorEx.Direction.REVERSE);
+            rightFront.setDirection(DcMotorEx.Direction.REVERSE);
+             */
+
+            //Uncomment for TeleOp...we'll figure out a way to make this work
             leftFront.setDirection(DcMotorEx.Direction.REVERSE);
             leftBack.setDirection(DcMotorEx.Direction.REVERSE);
-            //rightBack.setDirection(DcMotorEx.Direction.REVERSE);
-            //rightFront.setDirection(DcMotorEx.Direction.REVERSE);
+            rightBack.setDirection(DcMotorEx.Direction.REVERSE);
+            rightFront.setDirection(DcMotorEx.Direction.REVERSE);
             //TODO End Step 4.2
 
             lastLeftFrontPos = leftFront.getPositionAndVelocity().position;
@@ -224,8 +234,8 @@ public final class MecanumDrive {
         //Uncomment the lines for which the motorDirection need to be reversed to ensure all motors run forward in test
         leftFront.setDirection(DcMotorEx.Direction.REVERSE);
         leftBack.setDirection(DcMotorEx.Direction.REVERSE);
-        //rightFront.setDirection(DcMotorEx.Direction.REVERSE);
-        //rightBack.setDirection(DcMotorEx.Direction.REVERSE);
+        rightFront.setDirection(DcMotorEx.Direction.FORWARD);
+        rightBack.setDirection(DcMotorEx.Direction.FORWARD);
         //TODO Make the same update in DriveLocalizer() function. Search for Step 4.2
         //TODO End Step 4.1
 

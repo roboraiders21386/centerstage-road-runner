@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.subsystems.MecanumDrive;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -21,6 +22,11 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 @TeleOp(name = "RR TeleOp", group = "00-Teleop")
 public class RRTeleOpMode extends LinearOpMode {
+
+    private DcMotor leftFront;
+    private DcMotor leftBack;
+    private DcMotor rightFront;
+    private DcMotor rightBack;
 
     private TouchSensor pixel;
 
@@ -63,6 +69,7 @@ public class RRTeleOpMode extends LinearOpMode {
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor.setTargetPosition(armDownPosition);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
 
         double SLOW_DOWN_FACTOR = 0.75; //TODO Adjust to driver comfort
         telemetry.addData("Initializing TeleOp  for Team:", "21386");
@@ -164,26 +171,30 @@ public class RRTeleOpMode extends LinearOpMode {
                 }
 
                 if (gamepad1.dpad_up) {
-                    armMotor.setTargetPosition(armMotor.getCurrentPosition()+50);
-                    armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    armMotor.setPower(1);
+                    armMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+                    //armMotor.setTargetPosition(armMotor.getCurrentPosition()+50);
+                    armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    armMotor.setPower(0.75);
                     telemetry.addData("Up: ", armMotor.getCurrentPosition());
                 }
                 else if (gamepad1.dpad_down) {
+                    armMotor.setDirection(DcMotorSimple.Direction.FORWARD);
                     armMotor.setTargetPosition(armMotor.getCurrentPosition()-50);
                     armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     armMotor.setPower(-0.75);
                     telemetry.addData("Down: ", armMotor.getCurrentPosition());
                 } else {armMotor.setPower(0);}
                 if (gamepad1.dpad_left) {
+                    liftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
                     liftMotor.setTargetPosition(armMotor.getCurrentPosition()+50);
                     liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     liftMotor.setPower(1);
                 } else if (gamepad1.dpad_right) {
+                    liftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
                     liftMotor.setTargetPosition(armMotor.getCurrentPosition()-50);
                     liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     liftMotor.setPower(-1);
-                }
+                }else {liftMotor.setPower(0);}
 
                 double position = armMotor.getCurrentPosition();
                 double position2 = liftMotor.getCurrentPosition();

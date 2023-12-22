@@ -46,6 +46,7 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
 
         // Since LF and LB are reversed in the motors, should we reverse the corresponding encoders as well?
         //par0.setDirection(DcMotorEx.Direction.REVERSE);
+        par1.setDirection(DcMotorEx.Direction.REVERSE);
         //perp.setDirection(DcMotorEx.Direction.REVERSE);
 
 
