@@ -53,7 +53,8 @@ import java.util.List;
 /**
  * RR Autonomous
  */
-@Autonomous(name = "RR Auto (roadrunner 1.8)  - ", group = "00-Autonomous", preselectTeleOp = "RR TeleOp")
+//@Autonomous(name = "RR Auto (roadrunner 1.8)  - ", group = "00-Autonomous", preselectTeleOp = "RR TeleOp")
+@Autonomous(name = "RR Auto (roadrunner 1.8)  - ", group = "00-Autonomous")
 public class RRAutonomous extends LinearOpMode {
 
     public static String TEAM_NAME = "RoboRaiders";
@@ -109,7 +110,9 @@ public class RRAutonomous extends LinearOpMode {
         visionPipeline = new VisionOpenCVPipeline(telemetry);
 
         //Key Pay inputs to selecting Starting Position of robot
-        selectStartingPosition();
+        //selectStartingPosition();
+
+        startPosition = START_POSITION.BLUE_LEFT;
         telemetry.addData("Selected Starting Position", startPosition);
 
         //Activate Camera Vision that uses TensorFlow for pixel detection
@@ -159,33 +162,42 @@ public class RRAutonomous extends LinearOpMode {
         parkPose = new Pose2d(0,0, 0);
         double waitSecondsBeforeDrop = 0;
 
-        //Initialize drive
+        //Initialize drive  BLUE_LEFT
         MecanumDrive drive = new MecanumDrive(hardwareMap, initPose);
         initPose = new Pose2d(0, 0, Math.toRadians(0)); //Starting pose
-        moveBeyondTrussPose = new Pose2d(15,0,0);
-        dropPurplePixelPose = new Pose2d(22, 0, Math.toRadians(70));
+        moveBeyondTrussPose = new Pose2d(-15,0,Math.toRadians(0));
+        dropPurplePixelPose = new Pose2d(-26, -4, Math.toRadians(70));
 
+        midwayPose1 = new Pose2d(-15,-5,Math.toRadians(90));
+
+
+        //dropPurplePixelPose = new Pose2d(26, 8, Math.toRadians(0));
+        //dropYellowPixelPose = new Pose2d(23, 36, Math.toRadians(-90));
 
 
         //Move robot to dropPurplePixel based on identified Spike Mark Location
         //telemetry.addData("Move robot to dropPurplePixel based on identified Spike Mark Location: ", whichSide);
+
+
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
+                        //.lineToX(-15.0)
                         .strafeToLinearHeading(moveBeyondTrussPose.position, moveBeyondTrussPose.heading)
                         .strafeToLinearHeading(dropPurplePixelPose.position, dropPurplePixelPose.heading)
+                        .lineToX(-15.0)
                         .build());
 
         //TODO : Code to drop Purple Pixel on Spike Mark
         safeWaitSeconds(1);
-/*
+
         //Move robot to midwayPose1
-        telemetry.addData("Move robot to midwayPose1: ", whichSide);
+       // telemetry.addData("Move robot to midwayPose1: ", whichSide);
 
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
                         .strafeToLinearHeading(midwayPose1.position, midwayPose1.heading)
                         .build());
-
+/*
         //For Blue Right and Red Left, intake pixel from stack
         if (startPosition == START_POSITION.BLUE_RIGHT ||
                 startPosition == START_POSITION.RED_LEFT) {

@@ -17,9 +17,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public final class ThreeDeadWheelLocalizer implements Localizer {
     public static class Params {
         //TODO Step 11.1 : Update values of par0YTicks, part1YTicks, perpXTicks from AngularRampLogger
-        public double par0YTicks = -10434.356095299363; //-11683.65964102291; // -11400.633579319896; //-11702.617787599618; //0.0; // y position of the first parallel encoder (in tick units)
-        public double par1YTicks = -10793.15234628387;//11588.93126366356; //-11400.633579319896; //11636.31641072519; //1.0; // y position of the second parallel encoder (in tick units)
-        public double perpXTicks = 9194.789276546897;//4442.675984876408; // -11400.633579319896; //-9064.884736187201; //0.0; // x position of the perpendicular encoder (in tick units)
+        public double par0YTicks = 9596.385352261437;// Latest Dec 27 // Original 0.0; //-10434.356095299363; //-11683.65964102291; // -11400.633579319896; //-11702.617787599618; //0.0; // y position of the first parallel encoder (in tick units)
+        public double par1YTicks = 9503.113444816645; //Latest Dec 27th // Original 1.0; //-10793.15234628387;//11588.93126366356; //-11400.633579319896; //11636.31641072519; //1.0; // y position of the second parallel encoder (in tick units)
+        public double perpXTicks = 0.0; //9194.789276546897;//4442.675984876408; // -11400.633579319896; //-9064.884736187201; //0.0; // x position of the perpendicular encoder (in tick units)
     }
 
     public static Params PARAMS = new Params();
@@ -37,9 +37,19 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
         // TODO: make sure your config has **motors** with these names (or change them)
         //   the encoders should be plugged into the slot matching the named motor
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
-        par0 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "par0")));
-        par1 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "par1")));
-        perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "perp")));
+        //par0 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "par0")));
+        //par1 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "par1")));
+        //perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "perp")));
+
+
+        par0 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "LF")));
+        par1 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "RF")));
+        perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "RB")));
+
+        par0.setDirection(DcMotorEx.Direction.REVERSE);
+        par1.setDirection(DcMotorEx.Direction.REVERSE);
+
+        perp.setDirection(DcMotorEx.Direction.REVERSE);
 
         lastPar0Pos = par0.getPositionAndVelocity().position;
         lastPar1Pos = par1.getPositionAndVelocity().position;
