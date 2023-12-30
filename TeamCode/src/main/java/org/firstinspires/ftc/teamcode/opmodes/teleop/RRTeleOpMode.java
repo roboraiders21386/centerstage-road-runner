@@ -44,6 +44,10 @@ public class RRTeleOpMode extends LinearOpMode {
     private Servo RWRIST;
     private Servo LWRIST;
 
+    private double armMotorTicks = 5281.1;
+    //DcMotor armMotor = hardwareMap.dcMotor.get("Arm");
+
+
     @Override
     public void runOpMode() throws InterruptedException {
         boolean IntakeGrab;
@@ -62,12 +66,19 @@ public class RRTeleOpMode extends LinearOpMode {
         drone = hardwareMap.get(Servo.class, "droneLauncher");
         DcMotor armMotor = hardwareMap.dcMotor.get("Arm");
         DcMotor liftMotor = hardwareMap.dcMotor.get("LIFT");
-        armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        // ARM Motor
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        //armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //armMotor.setTargetPosition(armDownPosition);
+        //armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        //Lift Motor
         liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        armMotor.setTargetPosition(armDownPosition);
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftMotor.setTargetPosition(armDownPosition);
+        liftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        //liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        liftMotor.setTargetPosition(0);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
@@ -95,6 +106,7 @@ public class RRTeleOpMode extends LinearOpMode {
                     telemetry.update();
                 }
 
+                //Servo WRIST UP - this is working as of 12/30
                 if (gamepad1.y) {
                     wrist.setDirection(Servo.Direction.REVERSE); //edit for only one signal bc of y cable
                     wrist.setPosition(TURN_WRIST); //edit for only one signal bc of y cable
@@ -103,6 +115,7 @@ public class RRTeleOpMode extends LinearOpMode {
                     telemetry.update();
                 }
 
+                //Servo WRIST DOWN - this is working as of 12/30
                 if (gamepad1.a) {
                     wrist.setDirection(Servo.Direction.REVERSE); //edit for only one signal bc of y cable
                     wrist.setPosition(RESET_WRIST); //edit for only one signal bc of y cable
@@ -110,9 +123,9 @@ public class RRTeleOpMode extends LinearOpMode {
                     telemetry.addData("Reset", "Servos");
                     telemetry.update();
                 }
-
+                //Drone Launcher -  this is working as of 12/30
                 if(gamepad1.x){
-                    drone.setDirection(Servo.Direction.FORWARD);
+                    drone.setDirection(Servo.Direction.REVERSE);
                     drone.setPosition(1);
                     telemetry.addData("Launching", "Drone");
                     telemetry.update();
@@ -130,28 +143,13 @@ public class RRTeleOpMode extends LinearOpMode {
 
                 if (gamepad1.left_bumper) {
                     INTAKE.setDirection(Servo.Direction.FORWARD);
-
                     INTAKE.setPosition(0);
-
-                    /*
-                    if (pixel.isPressed()) {
-                        INTAKE3.setPower(0); //stops the intake servos
-                        INTAKE4.setPower(0);
-                        telemetry.addData("Pixel", "Detected");
-                        telemetry.update();
-                    } else {
-                        INTAKE4.setPower(0.75);
-                        INTAKE3.setPower(0.75);
-                        telemetry.addData("Intake", "Running!");
-                        telemetry.update();
-                        sleep(300);
-                    }`
-                     */
                 }
 
                 INTAKE.setPosition(0);
 
-
+                //Setup for RIGGING - takes ARM motor and LEFT motor at 45 deg angle and takes WRIST to UP position
+                // TODO to be tested. Not working as of 12/30
                 if (gamepad1.b) {
                     armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -161,6 +159,8 @@ public class RRTeleOpMode extends LinearOpMode {
                     armMotor.setPower(1);
                     liftMotor.setPower(1);
                 }
+
+                //LIFT the whole robot for rigging
                 if (gamepad1.start) { //this resets the arm to attach the hook
                     armMotor.setTargetPosition(0);
                     liftMotor.setTargetPosition(0);
@@ -170,57 +170,54 @@ public class RRTeleOpMode extends LinearOpMode {
                     armMotor.setPower(-0.75);
                 }
 
+                //ARM MOTOR - DPAD-UP goes UP, DPAD-DOWN goes DOWN
+                //Working as of 12/30 and holds position
+                //TODO Add guardrails for max and min values
                 if (gamepad1.dpad_up) {
-                    armMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-                    //armMotor.setTargetPosition(armMotor.getCurrentPosition()+50);
-                    armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    armMotor.setTargetPosition(armMotor.getCurrentPosition() + 50);
                     armMotor.setPower(0.75);
-                    telemetry.addData("Up: ", armMotor.getCurrentPosition());
-                }
-                else if (gamepad1.dpad_down) {
-                    armMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-                    armMotor.setTargetPosition(armMotor.getCurrentPosition()-50);
                     armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+                if (gamepad1.dpad_down) {
+                    armMotor.setTargetPosition(armMotor.getCurrentPosition() - 50);
                     armMotor.setPower(-0.75);
-                    telemetry.addData("Down: ", armMotor.getCurrentPosition());
-                } else {armMotor.setPower(0);}
-                if (gamepad1.dpad_left) {
-                    liftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-                    liftMotor.setTargetPosition(armMotor.getCurrentPosition()+50);
+                    armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                 }
+
+                // LIFT MOTOR - DPAD LEFT goes DOWN, DPAD RIGHT goes UP
+                //TODO Not working as of 12/30. Lift moves all the way back
+                if (gamepad1.dpad_right) {
+                    liftMotor.setTargetPosition(liftMotor.getCurrentPosition() + 50);
+                    liftMotor.setPower(0.3);
                     liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    liftMotor.setPower(1);
-                } else if (gamepad1.dpad_right) {
-                    liftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-                    liftMotor.setTargetPosition(armMotor.getCurrentPosition()-50);
+                } else if (gamepad1.dpad_left) {
+                    liftMotor.setTargetPosition(liftMotor.getCurrentPosition() - 50);
+                    liftMotor.setPower(-0.3);
                     liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    liftMotor.setPower(-1);
-                }else {liftMotor.setPower(0);}
+                }
 
-                double position = armMotor.getCurrentPosition();
-                double position2 = liftMotor.getCurrentPosition();
-                double desiredPosition = armMotor.getTargetPosition();
-                double desiredPosition2 = liftMotor.getTargetPosition();
-                telemetry.addData("Encoder Position", position);
-                telemetry.addData("Encoder Position", position2);
-                telemetry.addData("Desired Position", desiredPosition);
-                telemetry.addData("Desired Position", desiredPosition2);
-                telemetry.update();
+                //ARM Motor telemetry
+                telemetry.addData("-------------ARM-----------------","");
+                telemetry.addData("Current Position for ARM ", armMotor.getCurrentPosition());
+                telemetry.addData("Target Position for ARM", armMotor.getTargetPosition());
 
-                //telemetry.addData("LF Encoder", drive.leftFront.getCurrentPosition());
-                //telemetry.addData("LB Encoder", drive.leftBack.getCurrentPosition());
-                //telemetry.addData("RF Encoder", drive.rightFront.getCurrentPosition());
-                //telemetry.addData("RB Encoder", drive.rightBack.getCurrentPosition());
+                //LIFT Motor telemetry
+                telemetry.addData("---------------LIFT------------------------","");
+                telemetry.addData("Current Position for LIFT ", liftMotor.getCurrentPosition());
+                telemetry.addData("Target Position for LIFT", liftMotor.getTargetPosition());
 
+                //DriveTrain
+                telemetry.addData("-----------------DRIVE----------------------","");
                 telemetry.addLine("Current Pose");
-                telemetry.addData("x", drive.pose.position.x);
-                telemetry.addData("y", drive.pose.position.y);
-                telemetry.addData("heading", Math.toDegrees(drive.pose.heading.log()));
-                telemetry.update();
+                telemetry.addData("Current X pos: ", drive.pose.position.x);
+                telemetry.addData("Current Y pos: ", drive.pose.position.y);
+                telemetry.addData("Current heading", Math.toDegrees(drive.pose.heading.log()));
 
-            //telemetry.addData("x", drive.pose.position.x);
-            //telemetry.addData("y", drive.pose.position.y);
-            //telemetry.addData("heading", drive.pose.heading);
-            telemetry.update();
-        }
-    }
+                telemetry.update();
+        }  //end of while
+
+    } // end of opMode
+
+
+
 }
