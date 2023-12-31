@@ -8,9 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDrive;
 
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -23,14 +21,9 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 @TeleOp(name = "RR TeleOp", group = "00-Teleop")
 public class RRTeleOpMode extends LinearOpMode {
 
-    private DcMotor leftFront;
-    private DcMotor leftBack;
-    private DcMotor rightFront;
-    private DcMotor rightBack;
-
     private TouchSensor pixel;
 
-    private Servo INTAKE; //moving wheels
+    private Servo intake; //moving wheels
     private Servo wrist;
     private Servo drone;
 
@@ -41,27 +34,15 @@ public class RRTeleOpMode extends LinearOpMode {
     double ServoPosition = 1;
     double ServoSpeed = 0.5;
 
-    private Servo RWRIST;
-    private Servo LWRIST;
 
     private double armMotorTicks = 5281.1;
-    //DcMotor armMotor = hardwareMap.dcMotor.get("Arm");
 
 
     @Override
     public void runOpMode() throws InterruptedException {
-        boolean IntakeGrab;
-        boolean IntakeRelease;
-        boolean LowerLeft;
-        boolean RaiseRight;
-
-        int armUpPosition = -300;
-        int liftUpPosition = -150;
-        int armDownPosition = 300;
-        int liftDownPosition = 150;
 
         pixel = hardwareMap.get(TouchSensor.class, "pixel");
-        INTAKE = hardwareMap.get(Servo.class, "INTAKE");
+        intake = hardwareMap.get(Servo.class, "INTAKE");
         wrist = hardwareMap.get(Servo.class, "WRIST");
         drone = hardwareMap.get(Servo.class, "droneLauncher");
         DcMotor armMotor = hardwareMap.dcMotor.get("Arm");
@@ -70,14 +51,10 @@ public class RRTeleOpMode extends LinearOpMode {
         // ARM Motor
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        //armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //armMotor.setTargetPosition(armDownPosition);
-        //armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         //Lift Motor
         liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        //liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         liftMotor.setTargetPosition(0);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -101,7 +78,7 @@ public class RRTeleOpMode extends LinearOpMode {
                 ));
 
                 if (pixel.isPressed()) {
-                    INTAKE.setPosition(0); //stops the intake servos
+                    intake.setPosition(0); //stops the intake servos
                     telemetry.addData("Pixel", "Detected");
                     telemetry.update();
                 }
@@ -136,20 +113,20 @@ public class RRTeleOpMode extends LinearOpMode {
                 drive.updatePoseEstimate();
 
                 if (gamepad1.right_bumper) {
-                    INTAKE.setDirection(Servo.Direction.REVERSE);
-                    INTAKE.setPosition(0.75);
+                    intake.setDirection(Servo.Direction.REVERSE);
+                    intake.setPosition(0.75);
                     sleep(300);
                 }
 
                 if (gamepad1.left_bumper) {
-                    INTAKE.setDirection(Servo.Direction.FORWARD);
-                    INTAKE.setPosition(0);
+                    intake.setDirection(Servo.Direction.FORWARD);
+                    intake.setPosition(0);
                 }
 
-                INTAKE.setPosition(0);
+                intake.setPosition(0);
 
                 //Setup for RIGGING - takes ARM motor and LEFT motor at 45 deg angle and takes WRIST to UP position
-                // TODO to be tested. Not working as of 12/30
+                // Working as of 12/31
                 if (gamepad1.b) {
                     armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -161,6 +138,7 @@ public class RRTeleOpMode extends LinearOpMode {
                 }
 
                 //LIFT the whole robot for rigging
+                // Working as of 12/31
                 if (gamepad1.start) { //this resets the arm to attach the hook
                     armMotor.setTargetPosition(0);
                     liftMotor.setTargetPosition(0);
@@ -185,7 +163,7 @@ public class RRTeleOpMode extends LinearOpMode {
                  }
 
                 // LIFT MOTOR - DPAD LEFT goes DOWN, DPAD RIGHT goes UP
-                //TODO Not working as of 12/30. Lift moves all the way back
+                //Working as of 12/31 and holds position
                 if (gamepad1.dpad_right) {
                     liftMotor.setTargetPosition(liftMotor.getCurrentPosition() + 50);
                     liftMotor.setPower(0.3);
