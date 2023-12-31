@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -10,6 +11,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
+@Disabled
 @Autonomous(name="Concept: Color Blob detector ", group = "Concept")
 public class ColorBlobAuto extends LinearOpMode {
     OpenCvCamera camera;

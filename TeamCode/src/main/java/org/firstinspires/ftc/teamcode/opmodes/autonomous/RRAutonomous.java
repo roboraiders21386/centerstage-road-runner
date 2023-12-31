@@ -54,7 +54,7 @@ import java.util.List;
  * RR Autonomous
  */
 //@Autonomous(name = "RR Auto (roadrunner 1.8)  - ", group = "00-Autonomous", preselectTeleOp = "RR TeleOp")
-@Autonomous(name = "RR Auto (roadrunner 1.8)  - ", group = "00-Autonomous")
+@Autonomous(name = "RR Auto (roadrunner 1.10)  - ", group = "00-Autonomous", preselectTeleOp = "RR TeleOp")
 public class RRAutonomous extends LinearOpMode {
 
     public static String TEAM_NAME = "RoboRaiders";

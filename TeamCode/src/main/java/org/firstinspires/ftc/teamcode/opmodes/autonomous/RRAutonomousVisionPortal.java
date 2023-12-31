@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
 import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.SECONDS;
 
@@ -43,7 +43,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDrive;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -54,16 +53,14 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
-import java.util.List;
-
 /**
- * FTC WIRES Autonomous Example for only vision detection using tensorflow and park
+ * Autonomous  for only vision detection using OpenCV VisionPortal and park
  */
-@Autonomous(name = "FTC Wires Auto Open CV Vision", group = "00-Autonomous", preselectTeleOp = "FTC Wires TeleOp")
-public class FTCWiresAutoVisionOpenCV extends LinearOpMode {
+@Autonomous(name = "RR Auto (RR 1.10) Open CV VisionPortal", group = "00-Autonomous", preselectTeleOp = "RR TeleOp")
+public class RRAutonomousVisionPortal extends LinearOpMode {
 
-    public static String TEAM_NAME = "EDIT TEAM NAME"; //TODO: Enter team Name
-    public static int TEAM_NUMBER = 0; //TODO: Enter team Number
+    public static String TEAM_NAME = "RoboRaiders"; //TODO: Enter team Name
+    public static int TEAM_NUMBER = 21386; //TODO: Enter team Number
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
@@ -294,15 +291,14 @@ public class FTCWiresAutoVisionOpenCV extends LinearOpMode {
         telemetry.clearAll();
         //******select start pose*****
         while(!isStopRequested()){
-            telemetry.addData("Initializing FTC Wires (ftcwires.org) Autonomous adopted for Team:",
+            telemetry.addData("Initializing Autonomous adopted for:",
                     TEAM_NAME, " ", TEAM_NUMBER);
             telemetry.addData("---------------------------------------","");
-            telemetry.addLine("This Auto program uses Open CV Vision Processor for Team Element detection");
-            telemetry.addData("Select Starting Position using XYAB on Logitech (or ▢ΔOX on Playstayion) on gamepad 1:","");
-            telemetry.addData("    Blue Left   ", "(X / ▢)");
-            telemetry.addData("    Blue Right ", "(Y / Δ)");
-            telemetry.addData("    Red Left    ", "(B / O)");
-            telemetry.addData("    Red Right  ", "(A / X)");
+            telemetry.addData("Select Starting Position on gamepad 1:","");
+            telemetry.addData("    Blue Left   ", "(X)");
+            telemetry.addData("    Blue Right ", "(Y)");
+            telemetry.addData("    Red Left    ", "(B)");
+            telemetry.addData("    Red Right  ", "(A)");
             if(gamepad1.x){
                 startPosition = START_POSITION.BLUE_LEFT;
                 break;
@@ -341,11 +337,11 @@ public class FTCWiresAutoVisionOpenCV extends LinearOpMode {
 
         if (startPosition == START_POSITION.RED_LEFT ||
                 startPosition == START_POSITION.BLUE_LEFT) {
-            rectLeftOfCameraMid = new Rect(10, 40, 150, 240);
-            rectRightOfCameraMid = new Rect(160, 40, 470, 160);
+            rectLeftOfCameraMid = new Rect(10, 180, 150, 240);
+            rectRightOfCameraMid = new Rect(160, 180, 470, 160);
         } else { //RED_RIGHT or BLUE_RIGHT
-            rectLeftOfCameraMid = new Rect(10, 40, 470, 160);
-            rectRightOfCameraMid = new Rect(480, 40, 150, 240);
+            rectLeftOfCameraMid = new Rect(10, 180, 470, 160);
+            rectRightOfCameraMid = new Rect(480, 180, 150, 240);
         }
     }
 
@@ -354,12 +350,11 @@ public class FTCWiresAutoVisionOpenCV extends LinearOpMode {
      */
     private void runOpenCVObjectDetection() {
         visionOpenCV.getSelection();
-        telemetry.addLine("Open CV based Vision Processor for Team Element Detection");
         telemetry.addData("Identified Parking Location", identifiedSpikeMarkLocation);
-        telemetry.addData("SatLeftOfCameraMid", visionOpenCV.satRectLeftOfCameraMid);
-
-        telemetry.addData("SatRightOfCameraMid", visionOpenCV.satRectRightOfCameraMid);
-        telemetry.addData("SatRectNone", visionOpenCV.satRectNone);
+        telemetry.addLine("----- Sat values for Team Element -----");
+        telemetry.addData("Sat LEFT Of CameraMid: ", visionOpenCV.satRectLeftOfCameraMid);
+        telemetry.addData("Sat RIGHT Of CameraMid: ", visionOpenCV.satRectRightOfCameraMid);
+        telemetry.addData("SatRectNone Threshold: ", visionOpenCV.satRectNone);
         telemetry.update();
     }
 
@@ -373,7 +368,7 @@ public class FTCWiresAutoVisionOpenCV extends LinearOpMode {
         Mat hsvMat = new Mat();
 
         public double satRectLeftOfCameraMid, satRectRightOfCameraMid;
-        public double satRectNone = 40.0;
+        public double satRectNone = 40.0;  //Tried with 45 - but BLUE_RIGHT is borderline Original was 40.0
 
         public VisionOpenCV(HardwareMap hardwareMap){
             visionPortal = VisionPortal.easyCreateWithDefaults(
