@@ -27,6 +27,10 @@ public class RRTeleOpMode extends LinearOpMode {
     private Servo wrist;
     private Servo drone;
 
+    private DcMotor LF;
+    private DcMotor LB;
+    private DcMotor RF;
+    private DcMotor RB;
 
     private double TURN_WRIST = 1; //turn it forward
     private double RESET_WRIST = 0.5; //so it doesn't swing 180 back
@@ -38,6 +42,7 @@ public class RRTeleOpMode extends LinearOpMode {
     private double armMotorTicks = 5281.1;
 
 
+
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -47,6 +52,10 @@ public class RRTeleOpMode extends LinearOpMode {
         drone = hardwareMap.get(Servo.class, "droneLauncher");
         DcMotor armMotor = hardwareMap.dcMotor.get("Arm");
         DcMotor liftMotor = hardwareMap.dcMotor.get("LIFT");
+        DcMotor LF = hardwareMap.dcMotor.get("LF");
+        DcMotor LB = hardwareMap.dcMotor.get("LB");
+        DcMotor RF = hardwareMap.dcMotor.get("RF");
+        DcMotor RB = hardwareMap.dcMotor.get("RB");
 
         // ARM Motor
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -59,7 +68,7 @@ public class RRTeleOpMode extends LinearOpMode {
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-        double SLOW_DOWN_FACTOR = 0.75; //TODO Adjust to driver comfort
+        double SLOW_DOWN_FACTOR = 1; //TODO Adjust to driver comfort
         telemetry.addData("Initializing TeleOp  for Team:", "21386");
         telemetry.update();
 
@@ -69,13 +78,16 @@ public class RRTeleOpMode extends LinearOpMode {
 
             while (opModeIsActive()) {
                 telemetry.addData("Running TeleOp Mode adopted for Team:", "21386");
-                drive.setDrivePowers(new PoseVelocity2d(
+
+         drive.setDrivePowers(new PoseVelocity2d(
                         new Vector2d(
-                                -gamepad1.left_stick_y * SLOW_DOWN_FACTOR,
-                                -gamepad1.left_stick_x * SLOW_DOWN_FACTOR
+                                gamepad1.left_stick_y * SLOW_DOWN_FACTOR,
+                                gamepad1.left_stick_x * SLOW_DOWN_FACTOR
                         ),
-                        -gamepad1.right_stick_x * SLOW_DOWN_FACTOR
+                         -gamepad1.right_stick_x * SLOW_DOWN_FACTOR
                 ));
+
+
 
                 if (pixel.isPressed()) {
                     intake.setPosition(0); //stops the intake servos
@@ -123,18 +135,34 @@ public class RRTeleOpMode extends LinearOpMode {
                     intake.setPosition(0);
                 }
 
+                if(gamepad1.right_trigger > 0){
+                    ServoPosition = wrist.getPosition()+0.1;
+                    wrist.setPosition(ServoPosition);
+                    telemetry.addData("Wrist Current Position: ",wrist.getPosition());
+                    telemetry.update();
+                }
+
+                if(gamepad1.left_trigger > 0){
+                    ServoPosition = wrist.getPosition()-0.1;
+                    wrist.setPosition(ServoPosition);
+                    telemetry.addData("Wrist Current Position: ",wrist.getPosition());
+                    telemetry.update();
+                }
+
+
                 intake.setPosition(0);
 
                 //Setup for RIGGING - takes ARM motor and LEFT motor at 45 deg angle and takes WRIST to UP position
                 // Working as of 12/31
                 if (gamepad1.b) {
+                    armMotor.setTargetPosition(1100);
+                    liftMotor.setTargetPosition(1394);
                     armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    armMotor.setTargetPosition(1100);
                     telemetry.addData("Up: ", armMotor.getCurrentPosition());
-                    liftMotor.setTargetPosition(1394);
                     armMotor.setPower(1);
                     liftMotor.setPower(1);
+                    wrist.setPosition(TURN_WRIST);
                 }
 
                 //LIFT the whole robot for rigging
@@ -142,9 +170,11 @@ public class RRTeleOpMode extends LinearOpMode {
                 if (gamepad1.start) { //this resets the arm to attach the hook
                     armMotor.setTargetPosition(0);
                     liftMotor.setTargetPosition(0);
-                    wrist.setPosition(0);
+                    //wrist.setPosition(0);
                     armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION); //to be tested
+                    sleep(300);
+                    wrist.setPosition(RESET_WRIST);
                     armMotor.setPower(-0.75);
                 }
 
