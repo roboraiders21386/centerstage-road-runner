@@ -23,7 +23,7 @@ public class RRTeleOpMode extends LinearOpMode {
 
     private TouchSensor pixel;
 
-    private Servo intake; //moving wheels
+    private Servo intake; //Intake/Claw AXON Servo
     private Servo wrist;
     private Servo drone;
 
@@ -35,6 +35,7 @@ public class RRTeleOpMode extends LinearOpMode {
     private double TURN_WRIST = 1; //turn it forward
     private double RESET_WRIST = 0.5; //so it doesn't swing 180 back
 
+    double wristServoPosition = 0.0; //Incremental servo position for the wrist
     double ServoPosition = 1;
     double ServoSpeed = 0.5;
 
@@ -79,7 +80,7 @@ public class RRTeleOpMode extends LinearOpMode {
             while (opModeIsActive()) {
                 telemetry.addData("Running TeleOp Mode adopted for Team:", "21386");
 
-         drive.setDrivePowers(new PoseVelocity2d(
+                drive.setDrivePowers(new PoseVelocity2d(
                         new Vector2d(
                                 gamepad1.left_stick_y * SLOW_DOWN_FACTOR,
                                 gamepad1.left_stick_x * SLOW_DOWN_FACTOR
@@ -112,6 +113,25 @@ public class RRTeleOpMode extends LinearOpMode {
                     telemetry.addData("Reset", "Servos");
                     telemetry.update();
                 }
+
+                //Move Servo Wrist Incrementally - Raising
+                //TODO add guardrails
+                if (gamepad1.right_trigger > 0) {
+                    wristServoPosition = wrist.getPosition();
+                    wrist.setPosition(wristServoPosition + 0.1 );
+                    telemetry.addData("Raising wrist",wrist.getPosition());
+                    telemetry.update();
+                }
+                //Move Servo Wrist Incrementally - Lowering
+                //TODO add guardrails
+                if (gamepad1.left_trigger > 0) {
+                    wristServoPosition = wrist.getPosition();
+                    wrist.setPosition(wristServoPosition - 0.1 );
+                    telemetry.addData("Lowering wrist:", wrist.getPosition());
+                    telemetry.update();
+                }
+
+
                 //Drone Launcher -  this is working as of 12/30
                 if(gamepad1.x){
                     drone.setDirection(Servo.Direction.REVERSE);
@@ -124,33 +144,22 @@ public class RRTeleOpMode extends LinearOpMode {
 
                 drive.updatePoseEstimate();
 
+                //TODO Claw not working as of 1/1/2024 - need to troubleshoot
+                // INTAKE - Grab CLAW Closing
                 if (gamepad1.right_bumper) {
                     intake.setDirection(Servo.Direction.REVERSE);
-                    intake.setPosition(0.75);
+                    //intake.setPosition(1); // made it 1 on 1/1/2024
+                    intake.setPosition(0); // made it 1 on 1/1/2024
                     sleep(300);
                 }
-
+                // INTAKE - Release CLAW Opening
                 if (gamepad1.left_bumper) {
-                    intake.setDirection(Servo.Direction.FORWARD);
-                    intake.setPosition(0);
+                    //intake.setDirection(Servo.Direction.FORWARD);
+                    intake.setDirection(Servo.Direction.REVERSE);
+                    //intake.setPosition(0);
+                    intake.setPosition(1); // made it 1 on 1/1/2024
                 }
-
-                if(gamepad1.right_trigger > 0){
-                    ServoPosition = wrist.getPosition()+0.1;
-                    wrist.setPosition(ServoPosition);
-                    telemetry.addData("Wrist Current Position: ",wrist.getPosition());
-                    telemetry.update();
-                }
-
-                if(gamepad1.left_trigger > 0){
-                    ServoPosition = wrist.getPosition()-0.1;
-                    wrist.setPosition(ServoPosition);
-                    telemetry.addData("Wrist Current Position: ",wrist.getPosition());
-                    telemetry.update();
-                }
-
-
-                intake.setPosition(0);
+                //intake.setPosition(0);  //TODO - find out why was this setup here
 
                 //Setup for RIGGING - takes ARM motor and LEFT motor at 45 deg angle and takes WRIST to UP position
                 // Working as of 12/31
