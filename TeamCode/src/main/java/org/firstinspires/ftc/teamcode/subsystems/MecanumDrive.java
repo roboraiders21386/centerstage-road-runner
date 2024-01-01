@@ -125,10 +125,13 @@ public final class MecanumDrive {
         //   In this emperical process update value in increments of 0.0001 for drive encoders and 0.00001 for dead-wheel encoders
 
         //Original pre-tuning values
-        public double kA = 0;
+        //public double kA = 0;
 
         // Dec 27th - - Drive Encoder working values
         //public double kA = 0.0001; //0;
+
+        // Dec 31th - - Deadwheel values
+        public double kA = 0.0000001; //0;
 
         // path profile parameters (in inches)
         public double maxWheelVel = 50;
@@ -152,6 +155,10 @@ public final class MecanumDrive {
         //public double lateralGain = 1.0; //0.0;//3.0 ; // 12/140.0;
         //public double headingGain = 1.0; //0.0;//16.5 ; //0.0 12/14  // shared with turn
 
+        // Dec 31st - - Deadwheel tuning values
+        //public double axialGain = 0.5; //0.0;//6.0; // 12/14 0.0;
+        //public double lateralGain = 0.5; //0.0;//3.0 ; // 12/140.0;
+        //public double headingGain = 0.0; //0.0;//16.5 ; //0.0 12/14  // shared with turn
         public double axialVelGain = 0.0;
         public double lateralVelGain = 0.0;
         public double headingVelGain = 0.0; // shared with turn
