@@ -40,6 +40,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -67,6 +68,12 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
     //Vision parameters
     private VisionOpenCV visionOpenCV;
 
+    public Servo intake;
+    public Servo wrist;
+
+    private double TURN_WRIST = 1; //turn it forward
+    private double RESET_WRIST = 0.5; //so it doesn't swing 180 back
+
     //Define and declare Robot Starting Locations
     public enum START_POSITION{
         BLUE_LEFT,
@@ -85,6 +92,9 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+
+        intake = hardwareMap.get(Servo.class, "INTAKE");
+        wrist = hardwareMap.get(Servo.class, "WRIST");
 
         //Key Pay inputs to selecting Starting Position of robot
         selectStartingPosition();
@@ -141,11 +151,11 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
                 drive = new MecanumDrive(hardwareMap, initPose);
                 switch(identifiedSpikeMarkLocation){
                     case LEFT:
-                        dropPurplePixelPose = new Pose2d(26, 8, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(23, 36, Math.toRadians(-90));
+                        dropPurplePixelPose = new Pose2d(24, 13, Math.toRadians(0));
+                        dropYellowPixelPose = new Pose2d(23, 38 , Math.toRadians(-90));
                         break;
                     case MIDDLE:
-                        dropPurplePixelPose = new Pose2d(30, 3, Math.toRadians(0));
+                        dropPurplePixelPose = new Pose2d(26, 3, Math.toRadians(0));
                         dropYellowPixelPose = new Pose2d(30, 36,  Math.toRadians(-90));
                         break;
                     case RIGHT:
@@ -155,28 +165,28 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
                 }
                 midwayPose1 = new Pose2d(14, 13, Math.toRadians(-45));
                 waitSecondsBeforeDrop = 2; //TODO: Adjust time to wait for alliance partner to move from board
-                parkPose = new Pose2d(8, 30, Math.toRadians(-90));
+                parkPose = new Pose2d( 8, 36, Math.toRadians(-90));
                 break;
 
             case RED_RIGHT:
                 drive = new MecanumDrive(hardwareMap, initPose);
                 switch(identifiedSpikeMarkLocation){
                     case LEFT:
-                        dropPurplePixelPose = new Pose2d(30, 9, Math.toRadians(45));
-                        dropYellowPixelPose = new Pose2d(21, -36, Math.toRadians(90));
+                        dropPurplePixelPose = new Pose2d(30, 4, Math.toRadians(45));
+                        dropYellowPixelPose = new Pose2d(37, -38, Math.toRadians(90));
                         break;
                     case MIDDLE:
-                        dropPurplePixelPose = new Pose2d(30, -3, Math.toRadians(0));
+                        dropPurplePixelPose = new Pose2d(27, 0, Math.toRadians(0));
                         dropYellowPixelPose = new Pose2d(29, -36,  Math.toRadians(90));
                         break;
                     case RIGHT:
-                        dropPurplePixelPose = new Pose2d(26, -8, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(37, -36, Math.toRadians(90));
+                        dropPurplePixelPose = new Pose2d(23, -13, Math.toRadians(0));
+                        dropYellowPixelPose = new Pose2d(21, -36, Math.toRadians(90));
                         break;
                 }
                 midwayPose1 = new Pose2d(14, -13, Math.toRadians(45));
                 waitSecondsBeforeDrop = 2; //TODO: Adjust time to wait for alliance partner to move from board
-                parkPose = new Pose2d(8, -30, Math.toRadians(90));
+                parkPose = new Pose2d(8, -36, Math.toRadians(90));
                 break;
 
             case BLUE_RIGHT:
@@ -244,6 +254,7 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
                         .strafeToLinearHeading(midwayPose1.position, midwayPose1.heading)
                         .build());
 
+
         //For Blue Right and Red Left, intake pixel from stack
         if (startPosition == START_POSITION.BLUE_RIGHT ||
                 startPosition == START_POSITION.RED_LEFT) {
@@ -253,8 +264,11 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
                             .strafeToLinearHeading(intakeStack.position, intakeStack.heading)
                             .build());
 
+
+
             //TODO : Code to intake pixel from stack
             safeWaitSeconds(1);
+
 
             //Move robot to midwayPose2 and to dropYellowPixelPose
             Actions.runBlocking(
@@ -275,10 +289,17 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
 
         //TODO : Code to drop Pixel on Backdrop
         safeWaitSeconds(1);
+        wrist.setDirection(Servo.Direction.REVERSE); //edit for only one signal bc of y cable
+        wrist.setPosition(TURN_WRIST); //edit for only one signal bc of y cable
+        intake.setDirection(Servo.Direction.REVERSE);
+        intake.setPosition(1); // made it 1 on 1/1/2024
+        sleep(500);
 
         //Move robot to park in Backstage
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
+                        //TODO move backwards then lower wrist
+                        // TODO after that, strafe left to park
                         .strafeToLinearHeading(parkPose.position, parkPose.heading)
                         //.splineToLinearHeading(parkPose,0)
                         .build());
@@ -337,11 +358,11 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
 
         if (startPosition == START_POSITION.RED_LEFT ||
                 startPosition == START_POSITION.BLUE_LEFT) {
-            rectLeftOfCameraMid = new Rect(10, 180, 150, 240);
-            rectRightOfCameraMid = new Rect(160, 180, 470, 160);
+            rectLeftOfCameraMid = new Rect(10, 240, 150, 240);
+            rectRightOfCameraMid = new Rect(160, 240, 470, 160);
         } else { //RED_RIGHT or BLUE_RIGHT
-            rectLeftOfCameraMid = new Rect(10, 180, 470, 160);
-            rectRightOfCameraMid = new Rect(480, 180, 150, 240);
+            rectLeftOfCameraMid = new Rect(10, 240, 470, 160);
+            rectRightOfCameraMid = new Rect(480, 240, 150, 240);
         }
     }
 
@@ -368,7 +389,7 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
         Mat hsvMat = new Mat();
 
         public double satRectLeftOfCameraMid, satRectRightOfCameraMid;
-        public double satRectNone = 40.0;  //Tried with 45 - but BLUE_RIGHT is borderline Original was 40.0
+        public double satRectNone = 45.0; //Changed from 40 on 1/2/2024 because of camera issue //Tried with 45 - but BLUE_RIGHT is borderline Original was 40.0
 
         public VisionOpenCV(HardwareMap hardwareMap){
             visionPortal = VisionPortal.easyCreateWithDefaults(

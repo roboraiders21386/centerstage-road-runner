@@ -75,10 +75,11 @@ public final class MecanumDrive {
         //on 12/20 -166406.5 and 96 in
         //Dec 27th - 96 inc / 176007
         //Dec 27 - Drive Encoder working values  - 96 in 4165.5 ticks
-        //public double inPerTick = 0.02258424; // 0.023046; //0; //0.000545433; /// this is theoretical value 0.02224460305; //0.0010563407;
+        public double inPerTick = 0.02258424; // 0.023046; //0; //0.000545433; /// this is theoretical value 0.02224460305; //0.0010563407;
 
         //Dec 30 - Wheel Encoder tuning  95 in - 176244.5
-        public double inPerTick = 0.0005390239;
+        //public double inPerTick = 0.0005390239;
+
         //TODO Step 6 (Only for DriveEncoder Localizer) Set value of lateralInPerTick after running LateralPushTest
         //TODO Step 8 (Only for DeadWheel Localizer) Set value of lateralInPerTick after running LateralRampLogger
         //TODO Step 14 Make value of lateralInPerTick accurate after running LocalizationTest
@@ -86,10 +87,10 @@ public final class MecanumDrive {
         //Original Pre-tuning values
         //public double lateralInPerTick = 1;
         // Dec 27th - - Drive Encoder working values - 72 inc / 3128.25
-        //public double lateralInPerTick = 0.02301606 ; // 1; //-0.00049875224848382 ; //0.000338909630724183; // dec 10th 0.01387644451932522;
+        public double lateralInPerTick = 0.02301606 ; // 1; //-0.00049875224848382 ; //0.000338909630724183; // dec 10th 0.01387644451932522;
 
         // Dec 30th - Deadwheels tuning
-        public double lateralInPerTick =0.00043975596747412475;
+        //public double lateralInPerTick =0.00043975596747412475;
 
         //TODO Step 10 (Only for DriveEncoder Localizer) Set value of trackWidthTicks after running AngularRampLogger
         //TODO Step 11 (Only for DeadWheel Localizer) Set value of trackWidthTicks after running AngularRampLogger
@@ -99,10 +100,10 @@ public final class MecanumDrive {
         //public double trackWidthTicks = 0;
 
         // Dec 27th - - Drive Encoder working values
-        //public double trackWidthTicks = 1253.8151615179645; //0; //24471.781201919315; //Latest Dec 27
+        public double trackWidthTicks = 1253.8151615179645; //0; //24471.781201919315; //Latest Dec 27
 
         //Dec 30th Deadwheels tuning
-        public double trackWidthTicks = 22771.626989355074;
+        //public double trackWidthTicks = 22771.626989355074;
 
         // feedforward parameters (in tick units)
         //TODO Step 7 (Only for DeadWheel Localizer) Set value for kS and KV after running ForwardRampLogger
@@ -113,13 +114,13 @@ public final class MecanumDrive {
         //public double kV = 0;
 
         // Dec 27th - - Drive Encoder working values
-        //public double kS = 1.3975746299296725;// 0;// 0.9207149048292393; //Latest December 27th
-        //public double kV = 0.004255915479159497; //0;//0.00011290230327157028; //Latest December 27th
+        public double kS = 1.3975746299296725;// 0;// 0.9207149048292393; //Latest December 27th
+        public double kV = 0.004255915479159497; //0;//0.00011290230327157028; //Latest December 27th
 
         //Dec 30th - Deadwheels tuning
         //kV: 0.00012180298792153219, kS: 0.9411674308256521
-        public double kS = 0.9411674308256521;
-        public double kV = 0.00012180298792153219;
+        //public double kS = 0.9411674308256521;
+        //public double kV = 0.00012180298792153219;
 
         //TODO Step 12 Set value of kA after running ManualFeedforwardTuner.
         //   In this emperical process update value in increments of 0.0001 for drive encoders and 0.00001 for dead-wheel encoders
@@ -128,10 +129,10 @@ public final class MecanumDrive {
         //public double kA = 0;
 
         // Dec 27th - - Drive Encoder working values
-        //public double kA = 0.0001; //0;
+        public double kA = 0.0001; //0;
 
         // Dec 31th - - Deadwheel values
-        public double kA = 0.0000001; //0;
+        //public double kA = 0.0000001; //0;
 
         // path profile parameters (in inches)
         public double maxWheelVel = 50;
@@ -146,14 +147,14 @@ public final class MecanumDrive {
         //TODO Step 13 Set value of Gains after running ManualFeedbackTuner
 
         //Original pre-tuning values
-        public double axialGain = 0.0;
-        public double lateralGain = 0.0;
-        public double headingGain = 0.0; // shared with turn
+        //public double axialGain = 0.0;
+        //public double lateralGain = 0.0;
+        //public double headingGain = 0.0; // shared with turn
 
         // Dec 27th - - Drive Encoder working values
-        //public double axialGain = 1.0; //0.0;//6.0; // 12/14 0.0;
-        //public double lateralGain = 1.0; //0.0;//3.0 ; // 12/140.0;
-        //public double headingGain = 1.0; //0.0;//16.5 ; //0.0 12/14  // shared with turn
+        public double axialGain = 1.0; //0.0;//6.0; // 12/14 0.0;
+        public double lateralGain = 1.0; //0.0;//3.0 ; // 12/140.0;
+        public double headingGain = 1.0; //0.0;//16.5 ; //0.0 12/14  // shared with turn
 
         // Dec 31st - - Deadwheel tuning values
         //public double axialGain = 0.5; //0.0;//6.0; // 12/14 0.0;
@@ -326,12 +327,12 @@ public final class MecanumDrive {
 
         //TODO Step 3: Specify how the robot should track its position
         //Comment this line if NOT using Drive Encoder localization
-        //localizer = new DriveLocalizer();
+        localizer = new DriveLocalizer();
         //Uncomment next line if using Two Dead Wheel Localizer and also check TwoDeadWheelLocalizer.java for Step 3.1
         //localizer = new TwoDeadWheelLocalizer(hardwareMap, imu, PARAMS.inPerTick)
 
         //Uncomment next line if using Three Dead Wheel Localizer and also check ThreeDeadWheelLocalizer.java for Step 3.1
-        localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick);
+        //localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick);
         //TODO End Step 3 - Completed 11/1
 
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
