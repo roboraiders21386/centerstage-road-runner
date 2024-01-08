@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 /**
  * Robo Raiders TeleOp Testing
@@ -21,24 +23,34 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 @TeleOp(name = "RR TeleOp", group = "00-Teleop")
 public class RRTeleOpMode extends LinearOpMode {
 
-    private TouchSensor pixel;
+    //private TouchSensor pixel;
 
     private Servo intake; //Intake/Claw AXON Servo
     private Servo wrist;
     private Servo drone;
 
-    private DcMotor LF;
-    private DcMotor LB;
-    private DcMotor RF;
-    private DcMotor RB;
+    // WRIST related parameters
+    private double TURN_WRIST = 0.5; //turn it forward
+    private double RESET_WRIST = 0.2; //so it doesn't swing 180 back
 
-    private double TURN_WRIST = 1; //turn it forward
-    private double RESET_WRIST = 0.5; //so it doesn't swing 180 back
+    private double WRIST_SERVO_MAX = 0.8; //1; //0.9;
+    private double WRIST_SERVO_MIN = 0.2; //0.5;
+    ElapsedTime wristServoTimer = new ElapsedTime();
+    final double SERVOWAIT = 500; //20;
+    final double SERVOINC = 0.05;
+    double targetServoPosition = 0;
+
+    private int TRIGGERTIME = 500;
 
     double wristServoPosition = 0.0; //Incremental servo position for the wrist
     double ServoPosition = 1;
     double ServoSpeed = 0.5;
 
+    //CLAW parameters
+    //RELEASE -> OPEN
+    //GRAB -> CLOSE
+    final double CLAW_RELEASE = 1;
+    final double CLAW_GRAB = 0;
 
     private double armMotorTicks = 5281.1;
 
@@ -47,16 +59,12 @@ public class RRTeleOpMode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        pixel = hardwareMap.get(TouchSensor.class, "pixel");
+        //pixel = hardwareMap.get(TouchSensor.class, "pixel");
         intake = hardwareMap.get(Servo.class, "INTAKE");
         wrist = hardwareMap.get(Servo.class, "WRIST");
         drone = hardwareMap.get(Servo.class, "droneLauncher");
         DcMotor armMotor = hardwareMap.dcMotor.get("Arm");
         DcMotor liftMotor = hardwareMap.dcMotor.get("LIFT");
-        DcMotor LF = hardwareMap.dcMotor.get("LF");
-        DcMotor LB = hardwareMap.dcMotor.get("LB");
-        DcMotor RF = hardwareMap.dcMotor.get("RF");
-        DcMotor RB = hardwareMap.dcMotor.get("RB");
 
         // ARM Motor
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -77,6 +85,7 @@ public class RRTeleOpMode extends LinearOpMode {
             drive.updatePoseEstimate();
             waitForStart();
 
+
             while (opModeIsActive()) {
                 telemetry.addData("Running TeleOp Mode adopted for Team:", "21386");
 
@@ -89,47 +98,49 @@ public class RRTeleOpMode extends LinearOpMode {
                 ));
 
 
-
+/*
                 if (pixel.isPressed()) {
                     intake.setPosition(0); //stops the intake servos
                     telemetry.addData("Pixel", "Detected");
                     telemetry.update();
                 }
 
+ */
+
                 //Servo WRIST UP - this is working as of 12/30
-                if (gamepad1.y) {
-                    wrist.setDirection(Servo.Direction.REVERSE); //edit for only one signal bc of y cable
-                    wrist.setPosition(TURN_WRIST); //edit for only one signal bc of y cable
-                    ServoPosition += ServoSpeed;
+                if (gamepad1.y && wristServoTimer.milliseconds() > SERVOWAIT) {
+                    wrist.setDirection(Servo.Direction.REVERSE);
+                    wristServoTimer.reset();
+                    targetServoPosition = TURN_WRIST;
                     telemetry.addData("Turn", "Over");
                     telemetry.update();
                 }
 
                 //Servo WRIST DOWN - this is working as of 12/30
-                if (gamepad1.a) {
+                if (gamepad1.a && wristServoTimer.milliseconds() > SERVOWAIT) {
                     wrist.setDirection(Servo.Direction.REVERSE); //edit for only one signal bc of y cable
-                    wrist.setPosition(RESET_WRIST); //edit for only one signal bc of y cable
-                    ServoPosition += ServoSpeed;
+                    wristServoTimer.reset();
+                    targetServoPosition = RESET_WRIST;
                     telemetry.addData("Reset", "Servos");
                     telemetry.update();
                 }
 
                 //Move Servo Wrist Incrementally - Raising
-                //TODO add guardrails
-                if (gamepad1.right_trigger > 0) {
-                    wristServoPosition = wrist.getPosition();
-                    wrist.setPosition(wristServoPosition + 0.1 );
-                    telemetry.addData("Raising wrist",wrist.getPosition());
-                    telemetry.update();
+                //Between WRIST_SERVO_MIN, WRIST_SERVO_MAX
+                if (gamepad1.right_trigger > 0 && wristServoTimer.milliseconds() > SERVOWAIT) {
+                    wristServoTimer.reset();
+                    targetServoPosition = wrist.getPosition() +  SERVOINC;
                 }
+
                 //Move Servo Wrist Incrementally - Lowering
-                //TODO add guardrails
-                if (gamepad1.left_trigger > 0) {
-                    wristServoPosition = wrist.getPosition();
-                    wrist.setPosition(wristServoPosition - 0.1 );
-                    telemetry.addData("Lowering wrist:", wrist.getPosition());
-                    telemetry.update();
+                //Between WRIST_SERVO_MIN, WRIST_SERVO_MAX
+                if (gamepad1.left_trigger > 0 && wristServoTimer.milliseconds() > SERVOWAIT ) {
+                    wristServoTimer.reset();
+                    targetServoPosition = wrist.getPosition() -  SERVOINC;
                 }
+
+                //Set the WRIST position along with the guardrails
+                wrist.setPosition(Range.clip(targetServoPosition, WRIST_SERVO_MIN, WRIST_SERVO_MAX));
 
 
                 //Drone Launcher -  this is working as of 12/30
@@ -148,16 +159,13 @@ public class RRTeleOpMode extends LinearOpMode {
                 // INTAKE - Grab CLAW Closing
                 if (gamepad1.right_bumper) {
                     intake.setDirection(Servo.Direction.REVERSE);
-                    //intake.setPosition(1); // made it 1 on 1/1/2024
-                    intake.setPosition(0); // made it 1 on 1/1/2024
+                    intake.setPosition(CLAW_GRAB); // made it 1 on 1/1/2024
                     sleep(300);
                 }
                 // INTAKE - Release CLAW Opening
                 if (gamepad1.left_bumper) {
-                    //intake.setDirection(Servo.Direction.FORWARD);
                     intake.setDirection(Servo.Direction.REVERSE);
-                    //intake.setPosition(0);
-                    intake.setPosition(1); // made it 1 on 1/1/2024
+                    intake.setPosition(CLAW_RELEASE); // made it 1 on 1/1/2024
                 }
                 //intake.setPosition(0);  //TODO - find out why was this setup here
 
@@ -229,6 +237,12 @@ public class RRTeleOpMode extends LinearOpMode {
                 telemetry.addData("Current X pos: ", drive.pose.position.x);
                 telemetry.addData("Current Y pos: ", drive.pose.position.y);
                 telemetry.addData("Current heading", Math.toDegrees(drive.pose.heading.log()));
+
+                //Wrist Servo position
+                telemetry.addData("-----------------WRIST SERVO----------------------","");
+                telemetry.addData("Current Wrist servo pos: ", wrist.getPosition());
+                telemetry.addData("Target Wrist servo pos: ", targetServoPosition);
+
 
                 telemetry.update();
         }  //end of while
