@@ -173,7 +173,7 @@ public class RRTeleOpMode extends LinearOpMode {
                 // Working as of 12/31
                 if (gamepad1.b) {
                     armMotor.setTargetPosition(1100);
-                    liftMotor.setTargetPosition(1394);
+                    liftMotor.setTargetPosition(4000);//(1394);
                     armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     telemetry.addData("Up: ", armMotor.getCurrentPosition());
