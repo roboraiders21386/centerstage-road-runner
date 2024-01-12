@@ -208,19 +208,19 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
                 drive = new MecanumDrive(hardwareMap, initPose);
                 switch(identifiedSpikeMarkLocation){
                     case LEFT:
-                        dropPurplePixelPose = new Pose2d(27, 4, Math.toRadians(45));
-                        dropYellowPixelPose = new Pose2d(27, 86, Math.toRadians(-90));
-                        dropYellowPixelPosea = new Pose2d(27, 84, Math.toRadians(-90));
+                        dropPurplePixelPose = new Pose2d(27, 6, Math.toRadians(45));
+                        dropYellowPixelPose = new Pose2d(21, 88, Math.toRadians(-90));
+                        dropYellowPixelPosea = new Pose2d(21, 86, Math.toRadians(-90));
                         break;
                     case MIDDLE:
-                        dropPurplePixelPose = new Pose2d(30, -3, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(34, 86, Math.toRadians(-90));
-                        dropYellowPixelPosea = new Pose2d(34, 84, Math.toRadians(-90));
+                        dropPurplePixelPose = new Pose2d(24, 3, Math.toRadians(0));
+                        dropYellowPixelPose = new Pose2d(31, 88, Math.toRadians(-90));
+                        dropYellowPixelPosea = new Pose2d(28, 86, Math.toRadians(-90));
                         break;
                     case RIGHT:
-                        dropPurplePixelPose = new Pose2d(26, -8, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(43, 86, Math.toRadians(-90));
-                        dropYellowPixelPosea = new Pose2d(43, 84, Math.toRadians(-90));
+                        dropPurplePixelPose = new Pose2d(23, -10, Math.toRadians(0));
+                        dropYellowPixelPose = new Pose2d(35, 88, Math.toRadians(-90));
+                        dropYellowPixelPosea = new Pose2d(35, 86, Math.toRadians(-90));
                         break;
                 }
                 midwayPose1 = new Pose2d(8, -8, Math.toRadians(0));
@@ -275,9 +275,13 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
                         .build());
 
         //TODO : Code to drop Purple Pixel on Spike Mark
-        safeWaitSeconds(1);
-        wrist.setPosition(TURN_WRIST);
-        safeWaitSeconds(1);
+        //Turn the wrist
+        if (startPosition == START_POSITION.BLUE_LEFT ||
+                startPosition == START_POSITION.RED_RIGHT) {
+            safeWaitSeconds(1);
+            wrist.setPosition(TURN_WRIST);
+            safeWaitSeconds(1);
+        }
 
         //Move robot to midwayPose1
         Actions.runBlocking(
@@ -299,6 +303,8 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
 
             //TODO : Code to intake pixel from stack
             safeWaitSeconds(1);
+            wrist.setPosition(MOVE_SLIGHTLY);
+            safeWaitSeconds(1);
 
 
             //Move robot to midwayPose2 and to dropYellowPixelPose
@@ -306,6 +312,10 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
                     drive.actionBuilder(drive.pose)
                             .strafeToLinearHeading(midwayPose2.position, midwayPose2.heading)
                             .build());
+
+            safeWaitSeconds(1);
+            wrist.setPosition(TURN_WRIST);
+            safeWaitSeconds(1);
         }
 
         safeWaitSeconds(waitSecondsBeforeDrop);
@@ -320,10 +330,6 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
 
 
         //TODO : Code to drop Pixel on Backdrop
-        //safeWaitSeconds(1);
-        //wrist.setDirection(Servo.Direction.REVERSE); //edit for only one signal bc of y cable
-        //wrist.setPosition(TURN_WRIST); //edit for only one signal bc of y cable
-
         //Claw release
         intake.setDirection(Servo.Direction.REVERSE);
         intake.setPosition(CLAW_RELEASE); // made it 1 on 1/1/2024

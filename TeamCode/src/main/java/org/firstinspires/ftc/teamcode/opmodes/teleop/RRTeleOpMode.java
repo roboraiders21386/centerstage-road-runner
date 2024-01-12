@@ -172,13 +172,13 @@ public class RRTeleOpMode extends LinearOpMode {
                 //Setup for RIGGING - takes ARM motor and LEFT motor at 45 deg angle and takes WRIST to UP position
                 // Working as of 12/31
                 if (gamepad1.b) {
-                    armMotor.setTargetPosition(1100);
                     liftMotor.setTargetPosition(4000);//(1394);
-                    armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    armMotor.setTargetPosition(1100);
                     liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     telemetry.addData("Up: ", armMotor.getCurrentPosition());
-                    armMotor.setPower(1);
                     liftMotor.setPower(1);
+                    armMotor.setPower(1);
                     wrist.setPosition(TURN_WRIST);
                 }
 
