@@ -184,19 +184,19 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
                 drive = new MecanumDrive(hardwareMap, initPose);
                 switch(identifiedSpikeMarkLocation){
                     case LEFT:
-                        dropPurplePixelPose = new Pose2d(30, 4, Math.toRadians(45));
-                        dropYellowPixelPose = new Pose2d(37, -38, Math.toRadians(90));
-                        dropYellowPixelPosea = new Pose2d(37, -40, Math.toRadians(90));
+                        dropPurplePixelPose = new Pose2d(29, 5, Math.toRadians(45));
+                        dropYellowPixelPose = new Pose2d(41, -37, Math.toRadians(90));
+                        dropYellowPixelPosea = new Pose2d(41, -35, Math.toRadians(90));
                         break;
                     case MIDDLE:
-                        dropPurplePixelPose = new Pose2d(27, 0, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(29, -36,  Math.toRadians(90));
-                        dropYellowPixelPosea = new Pose2d(29, -38, Math.toRadians(90));
+                        dropPurplePixelPose = new Pose2d(30, 3, Math.toRadians(0));
+                        dropYellowPixelPose = new Pose2d(32, -35,  Math.toRadians(90));
+                        dropYellowPixelPosea = new Pose2d(32, -33, Math.toRadians(90));
                         break;
                     case RIGHT:
-                        dropPurplePixelPose = new Pose2d(23, -13, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(21, -36, Math.toRadians(90));
-                        dropYellowPixelPosea = new Pose2d(21, -38, Math.toRadians(90));
+                        dropPurplePixelPose = new Pose2d(27, -15, Math.toRadians(0));
+                        dropYellowPixelPose = new Pose2d(23, -35, Math.toRadians(90));
+                        dropYellowPixelPosea = new Pose2d(23, -33, Math.toRadians(90));
                         break;
                 }
                 midwayPose1 = new Pose2d(14, -13, Math.toRadians(45));
@@ -235,25 +235,25 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
                 drive = new MecanumDrive(hardwareMap, initPose);
                 switch(identifiedSpikeMarkLocation){
                     case LEFT:
-                        dropPurplePixelPose = new Pose2d(26, 10, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(37, -86, Math.toRadians(90));
-                        dropYellowPixelPosea = new Pose2d(37, -88, Math.toRadians(90));
+                        dropPurplePixelPose = new Pose2d(21, 9, Math.toRadians(10));
+                        dropYellowPixelPose = new Pose2d(41, -89, Math.toRadians(90));
+                        dropYellowPixelPosea = new Pose2d(41, -87, Math.toRadians(90));
                         break;
                     case MIDDLE:
-                        dropPurplePixelPose = new Pose2d(30, -3, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(29, -86, Math.toRadians(90));
-                        dropYellowPixelPosea = new Pose2d(29, -88, Math.toRadians(90));
+                        dropPurplePixelPose = new Pose2d(28, -3, Math.toRadians(0));
+                        dropYellowPixelPose = new Pose2d(32, -88, Math.toRadians(90));
+                        dropYellowPixelPosea = new Pose2d(32, -86, Math.toRadians(90));
                         break;
                     case RIGHT:
                         dropPurplePixelPose = new Pose2d(27, -9, Math.toRadians(-45));
-                        dropYellowPixelPose = new Pose2d(21, -86, Math.toRadians(90));
-                        dropYellowPixelPosea = new Pose2d(21, -88, Math.toRadians(90));
+                        dropYellowPixelPose = new Pose2d(23, -88, Math.toRadians(90));
+                        dropYellowPixelPosea = new Pose2d(23, -86, Math.toRadians(90));
                         break;
                 }
                 midwayPose1 = new Pose2d(8, 8, Math.toRadians(0));
                 midwayPose1a = new Pose2d(18, 18, Math.toRadians(90));
-                intakeStack = new Pose2d(52, 19,Math.toRadians(90));
-                midwayPose2 = new Pose2d(52, -62, Math.toRadians(90));
+                intakeStack = new Pose2d(64, 19,Math.toRadians(90));
+                midwayPose2 = new Pose2d(64, -62, Math.toRadians(90));
                 waitSecondsBeforeDrop = 2; //TODO: Adjust time to wait for alliance partner to move from board
                 parkPose = new Pose2d(50, -84, Math.toRadians(90));
                 break;
