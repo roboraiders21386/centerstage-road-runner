@@ -55,7 +55,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 /**
- * Autonomous  for only vision detection using OpenCV VisionPortal and park
+ * Autonomous  for only vision detection using OpenCV VisionPortal and park, THIS IS MEET 2
  */
 @Autonomous(name = "RR Auto (RR 1.10) Open CV VisionPortal", group = "00-Autonomous", preselectTeleOp = "RR TeleOp")
 public class RRAutonomousVisionPortal extends LinearOpMode {
