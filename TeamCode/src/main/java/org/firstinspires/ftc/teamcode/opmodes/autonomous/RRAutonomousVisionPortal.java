@@ -73,7 +73,7 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
 
     //WRIST parameters
     private double TURN_WRIST = 0.5; //turn it forward
-    private double RESET_WRIST = 0.2; //so it doesn't swing 180 back
+    private double RESET_WRIST = 0; //so it doesn't swing 180 back
     private double MOVE_SLIGHTLY = 0.3;
 
     private double WRIST_SERVO_MAX = 0.8; //1; //0.9;
@@ -149,6 +149,10 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
         Pose2d dropYellowPixelPose = new Pose2d(0, 0, 0);
         Pose2d dropYellowPixelPosea = new Pose2d(0, 0, 0);
         Pose2d parkPose = new Pose2d(0,0, 0);
+        Pose2d startWhite = new Pose2d(0,0, 0);
+        Pose2d getClose = new Pose2d(0,0, 0);
+        Pose2d stackGo = new Pose2d(0,0, 0);
+        Pose2d placeWhite = new Pose2d(0,0, 0);
         double waitSecondsBeforeDrop = 0;
         MecanumDrive drive = new MecanumDrive(hardwareMap, initPose);
 
@@ -189,19 +193,23 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
                         dropYellowPixelPosea = new Pose2d(41, -35, Math.toRadians(90));
                         break;
                     case MIDDLE:
-                        dropPurplePixelPose = new Pose2d(30, 3, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(32, -35,  Math.toRadians(90));
-                        dropYellowPixelPosea = new Pose2d(32, -33, Math.toRadians(90));
+                        dropPurplePixelPose = new Pose2d(28, 3, Math.toRadians(0));
+                        dropYellowPixelPose = new Pose2d(32, -37,  Math.toRadians(90));
+                        dropYellowPixelPosea = new Pose2d(32, -35, Math.toRadians(90));
                         break;
                     case RIGHT:
-                        dropPurplePixelPose = new Pose2d(27, -12, Math.toRadians(0));
+                        dropPurplePixelPose = new Pose2d(24, -12, Math.toRadians(0));
                         dropYellowPixelPose = new Pose2d(23, -33, Math.toRadians(90));
                         dropYellowPixelPosea = new Pose2d(23, -35, Math.toRadians(90));
                         break;
                 }
                 midwayPose1 = new Pose2d(14, -13, Math.toRadians(45));
                 waitSecondsBeforeDrop = 2; //TODO: Adjust time to wait for alliance partner to move from board
-                parkPose = new Pose2d(8, -36, Math.toRadians(90));
+                parkPose = new Pose2d(7, -36, Math.toRadians(90));
+                startWhite = new Pose2d(66, -24, Math.toRadians(0));
+                getClose = new Pose2d(66,60, Math.toRadians(90));
+                stackGo = new Pose2d(64, 91, Math.toRadians(-45));
+                placeWhite = new Pose2d(66, -32, Math.toRadians(48));
                 break;
 
             case BLUE_RIGHT:
@@ -228,7 +236,7 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
                 intakeStack = new Pose2d(60, -15,Math.toRadians(-90));
                 midwayPose2 = new Pose2d(60, 67, Math.toRadians(-90));
                 waitSecondsBeforeDrop = 2; //TODO: Adjust time to wait for alliance partner to move from board
-                parkPose = new Pose2d(50, 84, Math.toRadians(-90));
+                parkPose = new Pose2d(50, 87, Math.toRadians(-90));
                 break;
 
             case RED_LEFT:
@@ -264,8 +272,8 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
         intake.setPosition(CLAW_GRAB); // made it 1 on 1/1/2024
         sleep(300);
         wrist.setDirection(Servo.Direction.REVERSE);
-        wrist.setPosition(RESET_WRIST);
-        safeWaitSeconds(1);
+        wrist.setPosition(MOVE_SLIGHTLY);
+        safeWaitSeconds(0.1);
 
         //Move robot to dropPurplePixel based on identified Spike Mark Location
         Actions.runBlocking(
@@ -278,9 +286,9 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
         //Turn the wrist
         if (startPosition == START_POSITION.BLUE_LEFT ||
                 startPosition == START_POSITION.RED_RIGHT) {
-            safeWaitSeconds(1);
+            safeWaitSeconds(0.1);
             wrist.setPosition(TURN_WRIST);
-            safeWaitSeconds(1);
+            safeWaitSeconds(0.1);
         }
 
         //Move robot to midwayPose1
@@ -302,9 +310,8 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
 
 
             //TODO : Code to intake pixel from stack
-            safeWaitSeconds(1);
-            wrist.setPosition(MOVE_SLIGHTLY);
-            safeWaitSeconds(1);
+            safeWaitSeconds(0.5);
+
 
 
             //Move robot to midwayPose2 and to dropYellowPixelPose
@@ -313,9 +320,9 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
                             .strafeToLinearHeading(midwayPose2.position, midwayPose2.heading)
                             .build());
 
-            safeWaitSeconds(1);
+            safeWaitSeconds(0.25);
             wrist.setPosition(TURN_WRIST);
-            safeWaitSeconds(1);
+            safeWaitSeconds(0.1);
         }
 
         safeWaitSeconds(waitSecondsBeforeDrop);
@@ -333,17 +340,55 @@ public class RRAutonomousVisionPortal extends LinearOpMode {
         //Claw release
         intake.setDirection(Servo.Direction.REVERSE);
         intake.setPosition(CLAW_RELEASE); // made it 1 on 1/1/2024
-        safeWaitSeconds(2);
+        safeWaitSeconds(0.5);
 
 
         //Move robot to park in Backstage
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
-                        //TODO move backwards then lower wrist
-                        // TODO after that, strafe left to park
                         .splineToLinearHeading(dropYellowPixelPosea, 0)
-                        .strafeToLinearHeading(parkPose.position, parkPose.heading)
+                        //.strafeToLinearHeading(parkPose.position, parkPose.heading)
                         .build());
+
+        //TODO Code to make wrist move down after
+        wrist.setPosition(MOVE_SLIGHTLY);
+        safeWaitSeconds(0.5);
+
+        //Get ready to move through stage Door
+        Actions.runBlocking(
+                drive.actionBuilder(drive.pose)
+                        .strafeToLinearHeading(startWhite.position, startWhite.heading)//Math.tan(Math.toRadians(-89)))
+                        .strafeToLinearHeading(getClose.position, startWhite.heading)//Math.tan(Math.toRadians(89)))
+                        //.turn(90)
+                        .build());
+
+        //intake.setPosition(CLAW_RELEASE);
+        safeWaitSeconds(0.5);
+
+        //Get stack and go back
+        Actions.runBlocking(
+                drive.actionBuilder(drive.pose)
+                        .strafeToLinearHeading(stackGo.position, stackGo.heading)//Math.tan(Math.toRadians(89)))
+                        .build());
+
+        //TODO open claw here and intake 2 pixels
+        wrist.setPosition(RESET_WRIST);
+        intake.setPosition(CLAW_GRAB);
+        wrist.setPosition(MOVE_SLIGHTLY);
+        safeWaitSeconds(0.1);
+
+        //Place the pixels in the park pose
+        Actions.runBlocking(
+                drive.actionBuilder(drive.pose)
+                        .strafeToLinearHeading(placeWhite.position, placeWhite.heading  )//Math.tan(Math.toRadians(-89)))
+                        //.lineToYConstantHeading(parkPose.position.y)
+                        .build());
+
+        //TODO release claw
+        intake.setPosition(CLAW_RELEASE);
+        safeWaitSeconds(0.5);
+
+        //TODO Repeat this process as much as possible
     }
 
 
