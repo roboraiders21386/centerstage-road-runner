@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.subsystems.MecanumDrive;
  *
  */
 
-@TeleOp(name = "RR TeleOp", group = "00-Teleop")
+@TeleOp(name = "RR TeleOp Dup", group = "00-Teleop")
 public class RRTeleOpModeDup extends LinearOpMode {
 
     //private TouchSensor pixel;
