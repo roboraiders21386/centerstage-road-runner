@@ -52,7 +52,6 @@ import java.util.List;
  */
 
 @Disabled
-
 @Autonomous(name = "FTC Wires Auto Tensor Flow Vision", group = "00-Autonomous", preselectTeleOp = "FTC Wires TeleOp")
 public class FTCWiresAutoVisionTFOD extends LinearOpMode {
 

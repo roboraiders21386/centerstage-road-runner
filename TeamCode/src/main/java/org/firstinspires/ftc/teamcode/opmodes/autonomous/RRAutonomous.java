@@ -34,6 +34,7 @@ import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.SECONDS;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -54,6 +55,7 @@ import java.util.List;
  * RR Autonomous
  */
 //@Autonomous(name = "RR Auto (roadrunner 1.8)  - ", group = "00-Autonomous", preselectTeleOp = "RR TeleOp")
+@Disabled
 @Autonomous(name = "RR Auto (roadrunner 1.10) Custom VisionPipeline - ", group = "00-Autonomous", preselectTeleOp = "RR TeleOp")
 public class RRAutonomous extends LinearOpMode {
 
