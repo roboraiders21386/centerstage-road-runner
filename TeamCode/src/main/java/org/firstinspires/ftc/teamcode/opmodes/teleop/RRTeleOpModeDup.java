@@ -158,9 +158,10 @@ public class RRTeleOpModeDup extends LinearOpMode {
                 armMotor.setPower(1);
             }
             if (gamepad1.b && gamepad1.back) {
-                wrist.setPosition(TURN_WRIST);
-                liftMotor.setTargetPosition(240);//(4000);//(1394);
-                armMotor.setTargetPosition(309);
+                wrist.setPosition(0.45);
+
+                liftMotor.setTargetPosition(360);//(4000);//(1394);
+                armMotor.setTargetPosition(453);
                 liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 telemetry.addData("Up: ", armMotor.getCurrentPosition());
@@ -169,7 +170,7 @@ public class RRTeleOpModeDup extends LinearOpMode {
             }
             if (gamepad1.a && gamepad1.back) {
                 wrist.setPosition(TURN_WRIST);
-                liftMotor.setTargetPosition(841);//(4000);//(1394);
+                liftMotor.setTargetPosition(718);//(4000);//(1394);
                 armMotor.setTargetPosition(955);
                 liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -179,7 +180,7 @@ public class RRTeleOpModeDup extends LinearOpMode {
                 wrist.setPosition(TURN_WRIST);
             }
             if (gamepad1.x && gamepad1.back) {
-                wrist.setPosition(TURN_WRIST);
+                wrist.setPosition(0.45);
                 liftMotor.setTargetPosition(995);//(4000);//(1394);
                 armMotor.setTargetPosition(1014);
                 liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
