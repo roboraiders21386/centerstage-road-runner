@@ -5,8 +5,10 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -52,6 +54,9 @@ public class RRTeleOpModeDup extends LinearOpMode {
 
     private double armMotorTicks = 5281.1;
 
+    ColorSensor colorSensor;    // Hardware Device Object
+    LED RLED, LLED;
+
 
 
     @Override
@@ -63,6 +68,10 @@ public class RRTeleOpModeDup extends LinearOpMode {
         drone = hardwareMap.get(Servo.class, "droneLauncher");
         DcMotor armMotor = hardwareMap.dcMotor.get("Arm");
         DcMotor liftMotor = hardwareMap.dcMotor.get("LIFT");
+        //Color Sensor and LED
+        colorSensor = hardwareMap.get(ColorSensor.class, "sensor_color");
+        RLED = hardwareMap.get(LED.class, "RLED");
+        LLED = hardwareMap.get(LED.class, "LLED");
 
         // ARM Motor
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -78,6 +87,9 @@ public class RRTeleOpModeDup extends LinearOpMode {
         double SLOW_DOWN_FACTOR = 1; //TODO Adjust to driver comfort
         telemetry.addData("Initializing TeleOp  for Team:", "21386");
         telemetry.update();
+
+        //Switch off LEDs
+        RLED.enableLight(false); LLED.enableLight(false);
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
         drive.updatePoseEstimate();
@@ -104,6 +116,12 @@ public class RRTeleOpModeDup extends LinearOpMode {
                 }
 
  */
+            if ((colorSensor.red() > 100)|| (colorSensor.green() >100) || (colorSensor.blue() > 100)){
+                RLED.enableLight(true);  LLED.enableLight(true);
+            }else{
+                RLED.enableLight(false); LLED.enableLight(false);
+            }
+
 
             //Servo WRIST UP - this is working as of 12/30
             if (gamepad1.y && !gamepad1.back && wristServoTimer.milliseconds() > SERVOWAIT) {
