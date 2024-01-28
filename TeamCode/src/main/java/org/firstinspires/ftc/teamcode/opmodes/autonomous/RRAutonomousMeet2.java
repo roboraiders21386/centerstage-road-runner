@@ -39,7 +39,9 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -57,8 +59,8 @@ import org.opencv.imgproc.Imgproc;
 /**
  * Autonomous  for only vision detection using OpenCV VisionPortal and park
  */
-@Autonomous(name = "RR Auto - Meet 2", group = "00-Autonomous", preselectTeleOp = "RR TeleOp - Meet 1")
-public class RRAutonomous20 extends LinearOpMode {
+@Autonomous(name = "RR Auto - Meet 2", group = "00-Autonomous", preselectTeleOp = "RR TeleOp Dup")
+public class RRAutonomousMeet2 extends LinearOpMode {
 
     public static String TEAM_NAME = "RoboRaiders"; //TODO: Enter team Name
     public static int TEAM_NUMBER = 21386; //TODO: Enter team Number
@@ -72,7 +74,7 @@ public class RRAutonomous20 extends LinearOpMode {
     public Servo wrist;
 
     //WRIST parameters
-    private double TURN_WRIST = 0.5; //turn it forward
+    private double TURN_WRIST = 0.45; //turn it forward
     private double RESET_WRIST = 0.2; //so it doesn't swing 180 back
     private double MOVE_SLIGHTLY = 0.3;
 
@@ -97,11 +99,23 @@ public class RRAutonomous20 extends LinearOpMode {
     }
     public static IDENTIFIED_SPIKE_MARK_LOCATION identifiedSpikeMarkLocation = IDENTIFIED_SPIKE_MARK_LOCATION.LEFT;
 
+    ColorSensor colorSensor;    // Hardware Device Object
+    LED RLED, LLED;
+
+
     @Override
     public void runOpMode() throws InterruptedException {
 
         intake = hardwareMap.get(Servo.class, "INTAKE");
         wrist = hardwareMap.get(Servo.class, "WRIST");
+
+        //Color Sensor and LED
+        colorSensor = hardwareMap.get(ColorSensor.class, "sensor_color");
+        RLED = hardwareMap.get(LED.class, "RLED");
+        LLED = hardwareMap.get(LED.class, "LLED");
+
+        //Switch off LEDs
+        RLED.enableLight(false); LLED.enableLight(false);
 
 
         //Key Pay inputs to selecting Starting Position of robot
@@ -160,18 +174,18 @@ public class RRAutonomous20 extends LinearOpMode {
                 drive = new MecanumDrive(hardwareMap, initPose);
                 switch(identifiedSpikeMarkLocation){
                     case LEFT:
-                        dropPurplePixelPose = new Pose2d(24, 15, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(21, 36 , Math.toRadians(-90));
-                        dropYellowPixelPosea = new Pose2d(21, 34, Math.toRadians(-90));
+                        dropPurplePixelPose = new Pose2d(24, 14, Math.toRadians(0));
+                        dropYellowPixelPose = new Pose2d(19, 37 , Math.toRadians(-90));
+                        dropYellowPixelPosea = new Pose2d(19, 34, Math.toRadians(-90));
                         break;
                     case MIDDLE:
-                        dropPurplePixelPose = new Pose2d(27, 3, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(30, 34,  Math.toRadians(-90));
-                        dropYellowPixelPosea = new Pose2d(30, 32, Math.toRadians(-90));
+                        dropPurplePixelPose = new Pose2d(25, 3, Math.toRadians(0));
+                        dropYellowPixelPose = new Pose2d(30, 37,  Math.toRadians(-90));
+                        dropYellowPixelPosea = new Pose2d(30, 34, Math.toRadians(-90));
                         break;
                     case RIGHT:
                         dropPurplePixelPose = new Pose2d(24, -4, Math.toRadians(-45));
-                        dropYellowPixelPose = new Pose2d(39, 36, Math.toRadians(-90));
+                        dropYellowPixelPose = new Pose2d(39, 37, Math.toRadians(-90));
                         dropYellowPixelPosea = new Pose2d(39, 34, Math.toRadians(-90));
                         break;
                 }
@@ -184,19 +198,19 @@ public class RRAutonomous20 extends LinearOpMode {
                 drive = new MecanumDrive(hardwareMap, initPose);
                 switch(identifiedSpikeMarkLocation){
                     case LEFT:
-                        dropPurplePixelPose = new Pose2d(29, 2, Math.toRadians(45));
-                        dropYellowPixelPose = new Pose2d(41, -39, Math.toRadians(90));
-                        dropYellowPixelPosea = new Pose2d(41, -37, Math.toRadians(90));
+                        dropPurplePixelPose = new Pose2d(29, 5, Math.toRadians(45));
+                        dropYellowPixelPose = new Pose2d(41, -37, Math.toRadians(90));
+                        dropYellowPixelPosea = new Pose2d(41, -35, Math.toRadians(90));
                         break;
                     case MIDDLE:
-                        dropPurplePixelPose = new Pose2d(28, 3, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(32, -37,  Math.toRadians(90));
-                        dropYellowPixelPosea = new Pose2d(32, -35, Math.toRadians(90));
+                        dropPurplePixelPose = new Pose2d(27, 3, Math.toRadians(0));
+                        dropYellowPixelPose = new Pose2d(32, -35,  Math.toRadians(90));
+                        dropYellowPixelPosea = new Pose2d(32, -33, Math.toRadians(90));
                         break;
                     case RIGHT:
                         dropPurplePixelPose = new Pose2d(27, -12, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(23, -37, Math.toRadians(90));
-                        dropYellowPixelPosea = new Pose2d(23, -35, Math.toRadians(90));
+                        dropYellowPixelPose = new Pose2d(23, -35, Math.toRadians(90));
+                        dropYellowPixelPosea = new Pose2d(23, -33, Math.toRadians(90));
                         break;
                 }
                 midwayPose1 = new Pose2d(14, -13, Math.toRadians(45));
@@ -209,18 +223,18 @@ public class RRAutonomous20 extends LinearOpMode {
                 switch(identifiedSpikeMarkLocation){
                     case LEFT:
                         dropPurplePixelPose = new Pose2d(23, 6, Math.toRadians(45));
-                        dropYellowPixelPose = new Pose2d(21, 88, Math.toRadians(-90));
-                        dropYellowPixelPosea = new Pose2d(21, 86, Math.toRadians(-90));
+                        dropYellowPixelPose = new Pose2d(23, 89, Math.toRadians(-90));
+                        dropYellowPixelPosea = new Pose2d(23, 87, Math.toRadians(-90));
                         break;
                     case MIDDLE:
                         dropPurplePixelPose = new Pose2d(27, 3, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(31, 88, Math.toRadians(-90));
-                        dropYellowPixelPosea = new Pose2d(28, 86, Math.toRadians(-90));
+                        dropYellowPixelPose = new Pose2d(31, 89, Math.toRadians(-90));
+                        dropYellowPixelPosea = new Pose2d(31, 87, Math.toRadians(-90));
                         break;
                     case RIGHT:
                         dropPurplePixelPose = new Pose2d(23, -10, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(35, 88, Math.toRadians(-90));
-                        dropYellowPixelPosea = new Pose2d(35, 86, Math.toRadians(-90));
+                        dropYellowPixelPose = new Pose2d(35, 89, Math.toRadians(-90));
+                        dropYellowPixelPosea = new Pose2d(35, 87, Math.toRadians(-90));
                         break;
                 }
                 midwayPose1 = new Pose2d(8, -8, Math.toRadians(0));
@@ -236,24 +250,24 @@ public class RRAutonomous20 extends LinearOpMode {
                 switch(identifiedSpikeMarkLocation){
                     case LEFT:
                         dropPurplePixelPose = new Pose2d(21, 9, Math.toRadians(10));
-                        dropYellowPixelPose = new Pose2d(43, -89, Math.toRadians(90));
-                        dropYellowPixelPosea = new Pose2d(43 , -87, Math.toRadians(90));
+                        dropYellowPixelPose = new Pose2d(41, -89, Math.toRadians(90));
+                        dropYellowPixelPosea = new Pose2d(41, -87, Math.toRadians(90));
                         break;
                     case MIDDLE:
                         dropPurplePixelPose = new Pose2d(28, -3, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(32, -88, Math.toRadians(90));
-                        dropYellowPixelPosea = new Pose2d(32, -86, Math.toRadians(90));
+                        dropYellowPixelPose = new Pose2d(35, -90, Math.toRadians(90));
+                        dropYellowPixelPosea = new Pose2d(35, -87, Math.toRadians(90));
                         break;
                     case RIGHT:
-                        dropPurplePixelPose = new Pose2d(25, -6, Math.toRadians(-45));
-                        dropYellowPixelPose = new Pose2d(23, -88, Math.toRadians(90));
-                        dropYellowPixelPosea = new Pose2d(23, -86, Math.toRadians(90));
+                        dropPurplePixelPose = new Pose2d(27, -5, Math.toRadians(-45));
+                        dropYellowPixelPose = new Pose2d(25, -89, Math.toRadians(90));
+                        dropYellowPixelPosea = new Pose2d(25, -86, Math.toRadians(90));
                         break;
                 }
                 midwayPose1 = new Pose2d(8, 8, Math.toRadians(0));
                 midwayPose1a = new Pose2d(18, 18, Math.toRadians(90));
                 intakeStack = new Pose2d(64, 19,Math.toRadians(90));
-                midwayPose2 = new Pose2d(67, -62, Math.toRadians(90));
+                midwayPose2 = new Pose2d(64, -62, Math.toRadians(90));
                 waitSecondsBeforeDrop = 2; //TODO: Adjust time to wait for alliance partner to move from board
                 parkPose = new Pose2d(50, -84, Math.toRadians(90));
                 break;
@@ -265,7 +279,7 @@ public class RRAutonomous20 extends LinearOpMode {
         sleep(300);
         wrist.setDirection(Servo.Direction.REVERSE);
         wrist.setPosition(RESET_WRIST);
-        safeWaitSeconds(0.1);
+        safeWaitSeconds(1);
 
         //Move robot to dropPurplePixel based on identified Spike Mark Location
         Actions.runBlocking(
@@ -274,13 +288,17 @@ public class RRAutonomous20 extends LinearOpMode {
                         .strafeToLinearHeading(dropPurplePixelPose.position, dropPurplePixelPose.heading)
                         .build());
 
+        safeWaitSeconds(0.2);
+        wrist.setPosition(MOVE_SLIGHTLY);
+        safeWaitSeconds(0.2);
+
         //TODO : Code to drop Purple Pixel on Spike Mark
         //Turn the wrist
         if (startPosition == START_POSITION.BLUE_LEFT ||
                 startPosition == START_POSITION.RED_RIGHT) {
-            safeWaitSeconds(0.2);
+            safeWaitSeconds(1);
             wrist.setPosition(TURN_WRIST);
-            safeWaitSeconds(0.2);
+            safeWaitSeconds(1);
         }
 
         //Move robot to midwayPose1
@@ -288,6 +306,7 @@ public class RRAutonomous20 extends LinearOpMode {
                 drive.actionBuilder(drive.pose)
                         .strafeToLinearHeading(midwayPose1.position, midwayPose1.heading)
                         .build());
+
 
 
         //For Blue Right and Red Left, intake pixel from stack
@@ -302,9 +321,6 @@ public class RRAutonomous20 extends LinearOpMode {
 
 
             //TODO : Code to intake pixel from stack
-            safeWaitSeconds(0.2);
-            wrist.setPosition(MOVE_SLIGHTLY);
-            safeWaitSeconds(0.2);
 
 
             //Move robot to midwayPose2 and to dropYellowPixelPose
@@ -315,7 +331,7 @@ public class RRAutonomous20 extends LinearOpMode {
 
             safeWaitSeconds(0.2);
             wrist.setPosition(TURN_WRIST);
-            safeWaitSeconds(0.2);
+            safeWaitSeconds(0.3);
         }
 
         safeWaitSeconds(waitSecondsBeforeDrop);
@@ -331,10 +347,10 @@ public class RRAutonomous20 extends LinearOpMode {
 
         //TODO : Code to drop Pixel on Backdrop
         //Claw release
-        safeWaitSeconds(1);
+        safeWaitSeconds(2);
         intake.setDirection(Servo.Direction.REVERSE);
         intake.setPosition(CLAW_RELEASE); // made it 1 on 1/1/2024
-        safeWaitSeconds(2);
+        safeWaitSeconds(1);
 
 
         //Move robot to park in Backstage
