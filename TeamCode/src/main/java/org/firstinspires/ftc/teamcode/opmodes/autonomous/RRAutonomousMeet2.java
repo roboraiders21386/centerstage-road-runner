@@ -179,9 +179,9 @@ public class RRAutonomousMeet2 extends LinearOpMode {
                         dropYellowPixelPosea = new Pose2d(19, 34, Math.toRadians(-90));
                         break;
                     case MIDDLE:
-                        dropPurplePixelPose = new Pose2d(25, 3, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(30, 37,  Math.toRadians(-90));
-                        dropYellowPixelPosea = new Pose2d(30, 34, Math.toRadians(-90));
+                        dropPurplePixelPose = new Pose2d(27, 3, Math.toRadians(0));
+                        dropYellowPixelPose = new Pose2d(31, 37,  Math.toRadians(-90));
+                        dropYellowPixelPosea = new Pose2d(31, 34, Math.toRadians(-90));
                         break;
                     case RIGHT:
                         dropPurplePixelPose = new Pose2d(24, -4, Math.toRadians(-45));
@@ -204,8 +204,8 @@ public class RRAutonomousMeet2 extends LinearOpMode {
                         break;
                     case MIDDLE:
                         dropPurplePixelPose = new Pose2d(27, 3, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(32, -35,  Math.toRadians(90));
-                        dropYellowPixelPosea = new Pose2d(32, -33, Math.toRadians(90));
+                        dropYellowPixelPose = new Pose2d(33, -35,  Math.toRadians(90));
+                        dropYellowPixelPosea = new Pose2d(33, -33, Math.toRadians(90));
                         break;
                     case RIGHT:
                         dropPurplePixelPose = new Pose2d(27, -12, Math.toRadians(0));

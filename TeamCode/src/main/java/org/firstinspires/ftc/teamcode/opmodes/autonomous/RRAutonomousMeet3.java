@@ -195,7 +195,7 @@ public class RRAutonomousMeet3 extends LinearOpMode {
                         break;
                 }
                 midwayPose1 = new Pose2d(15, 14, Math.toRadians(-45));
-                waitSecondsBeforeDrop = 2; //TODO: Adjust time to wait for alliance partner to move from board
+                waitSecondsBeforeDrop = 1; //TODO: Adjust time to wait for alliance partner to move from board
                 parkPose = new Pose2d( 8, 33, Math.toRadians(-90));
                 break;
 
@@ -209,8 +209,8 @@ public class RRAutonomousMeet3 extends LinearOpMode {
                         break;
                     case MIDDLE:
                         dropPurplePixelPose = new Pose2d(27, 3, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(32, -35,  Math.toRadians(90));
-                        dropYellowPixelPosea = new Pose2d(32, -33, Math.toRadians(90));
+                        dropYellowPixelPose = new Pose2d(33, -35,  Math.toRadians(90));
+                        dropYellowPixelPosea = new Pose2d(33, -33, Math.toRadians(90));
                         break;
                     case RIGHT:
                         dropPurplePixelPose = new Pose2d(27, -12, Math.toRadians(0));
@@ -259,7 +259,7 @@ public class RRAutonomousMeet3 extends LinearOpMode {
                         dropYellowPixelPosea = new Pose2d(41, -87, Math.toRadians(90));
                         break;
                     case MIDDLE:
-                        dropPurplePixelPose = new Pose2d(28, -3, Math.toRadians(0));
+                        dropPurplePixelPose = new Pose2d(27, -3, Math.toRadians(0));
                         dropYellowPixelPose = new Pose2d(35, -90, Math.toRadians(90));
                         dropYellowPixelPosea = new Pose2d(35, -87, Math.toRadians(90));
                         break;
@@ -273,7 +273,7 @@ public class RRAutonomousMeet3 extends LinearOpMode {
                 midwayPose1a = new Pose2d(18, 18, Math.toRadians(90));
                 intakeStack = new Pose2d(64, 19,Math.toRadians(90));
                 midwayPose2 = new Pose2d(64, -62, Math.toRadians(90));
-                waitSecondsBeforeDrop = 2; //TODO: Adjust time to wait for alliance partner to move from board
+                waitSecondsBeforeDrop = 1; //TODO: Adjust time to wait for alliance partner to move from board
                 parkPose = new Pose2d(50, -84, Math.toRadians(90));
                 break;
         }
@@ -334,7 +334,7 @@ public class RRAutonomousMeet3 extends LinearOpMode {
                             .strafeToLinearHeading(midwayPose2.position, midwayPose2.heading)
                             .build());
 
-            safeWaitSeconds(0.2);
+            safeWaitSeconds(0.2 );
             wrist.setPosition(TURN_WRIST);
             safeWaitSeconds(0.3);
         }
@@ -352,10 +352,10 @@ public class RRAutonomousMeet3 extends LinearOpMode {
 
         //TODO : Code to drop Pixel on Backdrop
         //Claw release
-        safeWaitSeconds(2);
+        safeWaitSeconds(1);
         intake.setDirection(Servo.Direction.REVERSE);
         intake.setPosition(CLAW_RELEASE); // made it 1 on 1/1/2024
-        safeWaitSeconds(1);
+        safeWaitSeconds(0.8);
 
 
         //Move robot to park in Backstage
@@ -457,7 +457,7 @@ public class RRAutonomousMeet3 extends LinearOpMode {
 
         public double satRectLeftOfCameraMid, satRectRightOfCameraMid;
 
-        public double satRectNone = 50 ; //45.0; //Changed from 40 on 1/2/2024 because of camera issue //Tried with 45 - but BLUE_RIGHT is borderline Original was 40.0
+        public double satRectNone = 45 ; //45.0; //Changed from 40 on 1/2/2024 because of camera issue //Tried with 45 - but BLUE_RIGHT is borderline Original was 40.0
         //public double satRectNoneBlue = 47.5;
 
         public VisionOpenCV(HardwareMap hardwareMap){
