@@ -60,7 +60,7 @@ import org.opencv.imgproc.Imgproc;
  * Autonomous  for only vision detection using OpenCV VisionPortal and park
  */
 @Autonomous(name = "RR Auto - Meet 3", group = "00-Autonomous", preselectTeleOp = "RR TeleOp - Meet 3")
-public class RRAutonmousMeet3 extends LinearOpMode {
+public class RRAutonomousMeet3 extends LinearOpMode {
 
     public static String TEAM_NAME = "RoboRaiders"; //TODO: Enter team Name
     public static int TEAM_NUMBER = 21386; //TODO: Enter team Number
@@ -92,6 +92,10 @@ public class RRAutonmousMeet3 extends LinearOpMode {
     }
     public static START_POSITION startPosition;
 
+    public enum ALLIANCE{
+        BLUE,
+        RED
+    }
     public enum IDENTIFIED_SPIKE_MARK_LOCATION {
         LEFT,
         MIDDLE,
@@ -99,6 +103,7 @@ public class RRAutonmousMeet3 extends LinearOpMode {
     }
     public static IDENTIFIED_SPIKE_MARK_LOCATION identifiedSpikeMarkLocation = IDENTIFIED_SPIKE_MARK_LOCATION.LEFT;
 
+    public static ALLIANCE alliance;
     ColorSensor colorSensor;    // Hardware Device Object
     LED RLED, LLED;
 
@@ -163,10 +168,6 @@ public class RRAutonmousMeet3 extends LinearOpMode {
         Pose2d dropYellowPixelPose = new Pose2d(0, 0, 0);
         Pose2d dropYellowPixelPosea = new Pose2d(0, 0, 0);
         Pose2d parkPose = new Pose2d(0,0, 0);
-        Pose2d startWhite = new Pose2d(0,0, 0);
-        Pose2d getClose = new Pose2d(0,0, 0);
-        Pose2d stackGo = new Pose2d(0,0, 0);
-        Pose2d placeWhite = new Pose2d(0,0, 0);
         double waitSecondsBeforeDrop = 0;
         MecanumDrive drive = new MecanumDrive(hardwareMap, initPose);
 
@@ -183,7 +184,7 @@ public class RRAutonmousMeet3 extends LinearOpMode {
                         dropYellowPixelPosea = new Pose2d(19, 34, Math.toRadians(-90));
                         break;
                     case MIDDLE:
-                        dropPurplePixelPose = new Pose2d(25, 3, Math.toRadians(0));
+                        dropPurplePixelPose = new Pose2d(27, 3, Math.toRadians(0));
                         dropYellowPixelPose = new Pose2d(30, 37,  Math.toRadians(-90));
                         dropYellowPixelPosea = new Pose2d(30, 34, Math.toRadians(-90));
                         break;
@@ -220,10 +221,6 @@ public class RRAutonmousMeet3 extends LinearOpMode {
                 midwayPose1 = new Pose2d(14, -13, Math.toRadians(45));
                 waitSecondsBeforeDrop = 2; //TODO: Adjust time to wait for alliance partner to move from board
                 parkPose = new Pose2d(8, -36, Math.toRadians(90));
-                startWhite = new Pose2d(66, -24, Math.toRadians(0));
-                getClose = new Pose2d(66,60, Math.toRadians(90));
-                stackGo = new Pose2d(64, 91, Math.toRadians(-45));
-                placeWhite = new Pose2d(66, -32, Math.toRadians(48));
                 break;
 
             case BLUE_RIGHT:
@@ -304,9 +301,9 @@ public class RRAutonmousMeet3 extends LinearOpMode {
         //Turn the wrist
         if (startPosition == START_POSITION.BLUE_LEFT ||
                 startPosition == START_POSITION.RED_RIGHT) {
-            safeWaitSeconds(0.2);
+            safeWaitSeconds(1);
             wrist.setPosition(TURN_WRIST);
-            safeWaitSeconds(0.2);
+            safeWaitSeconds(1);
         }
 
         //Move robot to midwayPose1
@@ -355,10 +352,10 @@ public class RRAutonmousMeet3 extends LinearOpMode {
 
         //TODO : Code to drop Pixel on Backdrop
         //Claw release
-        safeWaitSeconds(1);
+        safeWaitSeconds(2);
         intake.setDirection(Servo.Direction.REVERSE);
         intake.setPosition(CLAW_RELEASE); // made it 1 on 1/1/2024
-        safeWaitSeconds(0.2);
+        safeWaitSeconds(1);
 
 
         //Move robot to park in Backstage
@@ -369,41 +366,6 @@ public class RRAutonmousMeet3 extends LinearOpMode {
                         .splineToLinearHeading(dropYellowPixelPosea, 0)
                         .strafeToLinearHeading(parkPose.position, parkPose.heading)
                         .build());
-
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .strafeToLinearHeading(startWhite.position, startWhite.heading)//Math.tan(Math.toRadians(-89)))
-                        .strafeToLinearHeading(getClose.position, startWhite.heading)//Math.tan(Math.toRadians(89)))
-                        //.turn(90)
-                        .build());
-
-        //intake.setPosition(CLAW_RELEASE);
-        safeWaitSeconds(0.5);
-
-        //Get stack and go back
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .strafeToLinearHeading(stackGo.position, stackGo.heading)//Math.tan(Math.toRadians(89)))
-                        .build());
-
-        //TODO open claw here and intake 2 pixels
-        wrist.setPosition(RESET_WRIST);
-        intake.setPosition(CLAW_GRAB);
-        wrist.setPosition(MOVE_SLIGHTLY);
-        safeWaitSeconds(0.1);
-
-        //Place the pixels in the park pose
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .strafeToLinearHeading(placeWhite.position, placeWhite.heading  )//Math.tan(Math.toRadians(-89)))
-                        //.lineToYConstantHeading(parkPose.position.y)
-                        .build());
-
-        //TODO release claw
-        intake.setPosition(CLAW_RELEASE);
-        safeWaitSeconds(0.5);
-
-        //TODO Repeat this process as much as possible
     }
 
 
@@ -423,18 +385,22 @@ public class RRAutonmousMeet3 extends LinearOpMode {
             telemetry.addData("    Red Right  ", "(A)");
             if(gamepad1.x){
                 startPosition = START_POSITION.BLUE_LEFT;
+                alliance = ALLIANCE.BLUE;
                 break;
             }
             if(gamepad1.y){
                 startPosition = START_POSITION.BLUE_RIGHT;
+                alliance = ALLIANCE.BLUE;
                 break;
             }
             if(gamepad1.b){
                 startPosition = START_POSITION.RED_LEFT;
+                alliance = ALLIANCE.RED;
                 break;
             }
             if(gamepad1.a){
                 startPosition = START_POSITION.RED_RIGHT;
+                alliance = ALLIANCE.RED;
                 break;
             }
             telemetry.update();
@@ -490,7 +456,9 @@ public class RRAutonmousMeet3 extends LinearOpMode {
         Mat hsvMat = new Mat();
 
         public double satRectLeftOfCameraMid, satRectRightOfCameraMid;
-        public double satRectNone = 45.0; //Changed from 40 on 1/2/2024 because of camera issue //Tried with 45 - but BLUE_RIGHT is borderline Original was 40.0
+
+        public double satRectNone = 50 ; //45.0; //Changed from 40 on 1/2/2024 because of camera issue //Tried with 45 - but BLUE_RIGHT is borderline Original was 40.0
+        //public double satRectNoneBlue = 47.5;
 
         public VisionOpenCV(HardwareMap hardwareMap){
             visionPortal = VisionPortal.easyCreateWithDefaults(

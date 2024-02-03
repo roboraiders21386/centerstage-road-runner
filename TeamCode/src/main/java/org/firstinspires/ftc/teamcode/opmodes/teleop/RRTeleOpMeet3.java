@@ -126,13 +126,25 @@ public class RRTeleOpMeet3 extends LinearOpMode {
             }
 
             //Servo WRIST DOWN , ARM, LIFT down
-            if (gamepad1.a && !gamepad1.back && wristServoTimer.milliseconds() > SERVOWAIT) {
-                armMotor.setTargetPosition(0);
+            /*if (gamepad1.a && !gamepad1.back && wristServoTimer.milliseconds() > SERVOWAIT) {
                 liftMotor.setTargetPosition(0);
-                //wrist.setPosition(0);
-                armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION); //to be tested
                 sleep(300);
+                armMotor.setTargetPosition(0);
+                //wrist.setPosition(0);
+                armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                sleep(200);
+                wrist.setDirection(Servo.Direction.REVERSE); //edit for only one signal bc of y cable
+                wristServoTimer.reset();
+                targetServoPosition = RESET_WRIST;
+                telemetry.addData("Reset", "Servos");
+                telemetry.update();
+            }
+
+             */
+
+            //Servo WRIST DOWN - this is working as of 12/30
+            if (gamepad1.a && !gamepad1.back && wristServoTimer.milliseconds() > SERVOWAIT) {
                 wrist.setDirection(Servo.Direction.REVERSE); //edit for only one signal bc of y cable
                 wristServoTimer.reset();
                 targetServoPosition = RESET_WRIST;
@@ -184,8 +196,9 @@ public class RRTeleOpMeet3 extends LinearOpMode {
                 wristServoTimer.reset();
                 targetServoPosition = TURN_WRIST;
                 liftMotor.setTargetPosition(1500);//(4000);//(1394);
-                armMotor.setTargetPosition(1100);
                 liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                sleep(300);
+                armMotor.setTargetPosition(1100);
                 armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 telemetry.addData("Up: ", armMotor.getCurrentPosition());
                 liftMotor.setPower(1);
@@ -198,8 +211,9 @@ public class RRTeleOpMeet3 extends LinearOpMode {
                 targetServoPosition = TURN_WRIST;
                 sleep(300);
                 liftMotor.setTargetPosition(360);//(4000);//(1394);
-                armMotor.setTargetPosition(453);
                 liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                sleep(300);
+                armMotor.setTargetPosition(453);
                 armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 telemetry.addData("Up: ", armMotor.getCurrentPosition());
                 liftMotor.setPower(1);
@@ -225,11 +239,11 @@ public class RRTeleOpMeet3 extends LinearOpMode {
 
             //LIFT the whole robot for rigging
             if (gamepad1.start) { //this resets the arm to attach the hook
-                armMotor.setTargetPosition(0);
                 liftMotor.setTargetPosition(0);
-                //wrist.setPosition(0);
-                armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION); //to be tested
+                sleep(300);
+                armMotor.setTargetPosition(0);
+                armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 sleep(300);
                 wrist.setPosition(RESET_WRIST);
                 armMotor.setPower(-0.75);
