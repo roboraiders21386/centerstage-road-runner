@@ -38,6 +38,7 @@ import android.graphics.Paint;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -57,6 +58,7 @@ import org.opencv.imgproc.Imgproc;
 /**
  * Autonomous  for only vision detection using OpenCV VisionPortal and park, THIS IS MEET 2
  */
+@Disabled
 @Autonomous(name = "RR Auto (RR 1.10) Open CV VisionPortal", group = "00-Autonomous", preselectTeleOp = "RR TeleOp")
 public class RRAutonomousVisionPortal extends LinearOpMode {
 

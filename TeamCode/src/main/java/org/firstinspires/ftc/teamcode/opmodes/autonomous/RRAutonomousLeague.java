@@ -59,8 +59,8 @@ import org.opencv.imgproc.Imgproc;
 /**
  * Autonomous  for only vision detection using OpenCV VisionPortal and park
  */
-@Autonomous(name = "RR Auto - Meet 3", group = "00-Autonomous", preselectTeleOp = "RR TeleOp - Meet 3")
-public class RRAutonomousMeet3 extends LinearOpMode {
+@Autonomous(name = "RR Auto - League Meet ", group = "00-Autonomous", preselectTeleOp = "RR TeleOp - Meet 3")
+public class RRAutonomousLeague extends LinearOpMode {
 
     public static String TEAM_NAME = "RoboRaiders"; //TODO: Enter team Name
     public static int TEAM_NUMBER = 21386; //TODO: Enter team Number
@@ -75,6 +75,7 @@ public class RRAutonomousMeet3 extends LinearOpMode {
 
     //WRIST parameters
     private double TURN_WRIST = 0.45; //turn it forward
+    private double TURN_WRIST_FAR = 0.5; //turn it forward but only for blue right and red left
     private double RESET_WRIST = 0.2; //so it doesn't swing 180 back
     private double MOVE_SLIGHTLY = 0.3;
 
@@ -161,6 +162,7 @@ public class RRAutonomousMeet3 extends LinearOpMode {
         Pose2d initPose = new Pose2d(0, 0, 0); // Starting Pose
         Pose2d moveBeyondTrussPose = new Pose2d(0,0,0);
         Pose2d dropPurplePixelPose = new Pose2d(0, 0, 0);
+        Pose2d dropPurplePixelPosea = new Pose2d(0, 0, 0);
         Pose2d midwayPose1 = new Pose2d(0,0,0);
         Pose2d midwayPose1a = new Pose2d(0,0,0);
         Pose2d intakeStack = new Pose2d(0,0,0);
@@ -179,24 +181,27 @@ public class RRAutonomousMeet3 extends LinearOpMode {
                 drive = new MecanumDrive(hardwareMap, initPose);
                 switch(identifiedSpikeMarkLocation){
                     case LEFT:
-                        dropPurplePixelPose = new Pose2d(24, 14, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(19, 37 , Math.toRadians(-90));
-                        dropYellowPixelPosea = new Pose2d(19, 34, Math.toRadians(-90));
+                        dropPurplePixelPose = new Pose2d(22, 2, Math.toRadians(32));
+                        dropPurplePixelPosea = new Pose2d(20, 0, Math.toRadians(32));
+                        dropYellowPixelPose = new Pose2d(20, 35, Math.toRadians(-90));
+                        dropYellowPixelPosea = new Pose2d(20, 33, Math.toRadians(-90));
                         break;
                     case MIDDLE:
                         dropPurplePixelPose = new Pose2d(27, 3, Math.toRadians(0));
+                        dropPurplePixelPosea = new Pose2d(25, 3, Math.toRadians(0));
                         dropYellowPixelPose = new Pose2d(30, 37,  Math.toRadians(-90));
                         dropYellowPixelPosea = new Pose2d(30, 34, Math.toRadians(-90));
                         break;
                     case RIGHT:
-                        dropPurplePixelPose = new Pose2d(24, -4, Math.toRadians(-45));
-                        dropYellowPixelPose = new Pose2d(39, 37, Math.toRadians(-90));
-                        dropYellowPixelPosea = new Pose2d(39, 34, Math.toRadians(-90));
+                        dropPurplePixelPose = new Pose2d(24, -3, Math.toRadians(-45));
+                        dropPurplePixelPosea = new Pose2d(23, -1, Math.toRadians(-45));
+                        dropYellowPixelPose = new Pose2d(41, 37, Math.toRadians(-90));
+                        dropYellowPixelPosea = new Pose2d(41, 31, Math.toRadians(-90));
                         break;
                 }
                 midwayPose1 = new Pose2d(15, 14, Math.toRadians(-45));
                 waitSecondsBeforeDrop = 1; //TODO: Adjust time to wait for alliance partner to move from board
-                parkPose = new Pose2d( 8, 33, Math.toRadians(-90));
+                parkPose = new Pose2d( 2, 33, Math.toRadians(-90));
                 break;
 
             case RED_RIGHT:
@@ -204,16 +209,19 @@ public class RRAutonomousMeet3 extends LinearOpMode {
                 switch(identifiedSpikeMarkLocation){
                     case LEFT:
                         dropPurplePixelPose = new Pose2d(29, 5, Math.toRadians(45));
+                        dropPurplePixelPosea = new Pose2d(27, 3, Math.toRadians(45));
                         dropYellowPixelPose = new Pose2d(41, -37, Math.toRadians(90));
                         dropYellowPixelPosea = new Pose2d(41, -35, Math.toRadians(90));
                         break;
                     case MIDDLE:
                         dropPurplePixelPose = new Pose2d(27, 3, Math.toRadians(0));
+                        dropPurplePixelPosea = new Pose2d(25, 3, Math.toRadians(0));
                         dropYellowPixelPose = new Pose2d(33, -35,  Math.toRadians(90));
                         dropYellowPixelPosea = new Pose2d(33, -33, Math.toRadians(90));
                         break;
                     case RIGHT:
                         dropPurplePixelPose = new Pose2d(27, -12, Math.toRadians(0));
+                        dropPurplePixelPosea = new Pose2d(25, -10, Math.toRadians(0));
                         dropYellowPixelPose = new Pose2d(23, -35, Math.toRadians(90));
                         dropYellowPixelPosea = new Pose2d(23, -33, Math.toRadians(90));
                         break;
@@ -227,25 +235,29 @@ public class RRAutonomousMeet3 extends LinearOpMode {
                 drive = new MecanumDrive(hardwareMap, initPose);
                 switch(identifiedSpikeMarkLocation){
                     case LEFT:
-                        dropPurplePixelPose = new Pose2d(23, 6, Math.toRadians(45));
-                        dropYellowPixelPose = new Pose2d(23, 89, Math.toRadians(-90));
-                        dropYellowPixelPosea = new Pose2d(23, 87, Math.toRadians(-90));
+                        dropPurplePixelPose = new Pose2d(23, 8, Math.toRadians(32));
+                        dropPurplePixelPosea = new Pose2d(21, 6, Math.toRadians(32));
+                        dropYellowPixelPose = new Pose2d(25, 91, Math.toRadians(-90));
+                        dropYellowPixelPosea = new Pose2d(25, 88, Math.toRadians(-90));
                         break;
                     case MIDDLE:
-                        dropPurplePixelPose = new Pose2d(27, 3, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(31, 89, Math.toRadians(-90));
+                        dropPurplePixelPose = new Pose2d(26, 3, Math.toRadians(0));
+                        dropPurplePixelPosea = new Pose2d(24, 3, Math.toRadians(0));
+                        dropYellowPixelPose = new Pose2d(31, 90, Math.toRadians(-90));
                         dropYellowPixelPosea = new Pose2d(31, 87, Math.toRadians(-90));
                         break;
                     case RIGHT:
-                        dropPurplePixelPose = new Pose2d(23, -10, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(35, 89, Math.toRadians(-90));
-                        dropYellowPixelPosea = new Pose2d(35, 87, Math.toRadians(-90));
+                        dropPurplePixelPose = new Pose2d(23, -1, Math.toRadians(-22));
+                        dropPurplePixelPosea = new Pose2d(20, 2, Math.toRadians(-22));
+                        dropYellowPixelPose = new Pose2d(37, 89, Math.toRadians(-90));
+                        dropYellowPixelPosea = new Pose2d(37, 87, Math.toRadians(-90));
                         break;
                 }
+                moveBeyondTrussPose = new Pose2d(12,0,0);
                 midwayPose1 = new Pose2d(8, -8, Math.toRadians(0));
-                midwayPose1a = new Pose2d(20, -12, Math.toRadians(-90));
-                intakeStack = new Pose2d(60, -15,Math.toRadians(-90));
-                midwayPose2 = new Pose2d(60, 67, Math.toRadians(-90));
+                midwayPose1a = new Pose2d(20, -16, Math.toRadians(-90));
+                intakeStack = new Pose2d(60, -22,Math.toRadians(-90));
+                midwayPose2 = new Pose2d(60, 60, Math.toRadians(-90));
                 waitSecondsBeforeDrop = 2; //TODO: Adjust time to wait for alliance partner to move from board
                 parkPose = new Pose2d(50, 84, Math.toRadians(-90));
                 break;
@@ -255,20 +267,24 @@ public class RRAutonomousMeet3 extends LinearOpMode {
                 switch(identifiedSpikeMarkLocation){
                     case LEFT:
                         dropPurplePixelPose = new Pose2d(21, 9, Math.toRadians(10));
+                        dropPurplePixelPosea = new Pose2d(19, 7, Math.toRadians(10));
                         dropYellowPixelPose = new Pose2d(41, -89, Math.toRadians(90));
                         dropYellowPixelPosea = new Pose2d(41, -87, Math.toRadians(90));
                         break;
                     case MIDDLE:
                         dropPurplePixelPose = new Pose2d(27, -3, Math.toRadians(0));
+                        dropPurplePixelPosea = new Pose2d(25, -3, Math.toRadians(0));
                         dropYellowPixelPose = new Pose2d(35, -90, Math.toRadians(90));
                         dropYellowPixelPosea = new Pose2d(35, -87, Math.toRadians(90));
                         break;
                     case RIGHT:
                         dropPurplePixelPose = new Pose2d(27, -5, Math.toRadians(-45));
+                        dropPurplePixelPosea = new Pose2d(25, -7, Math.toRadians(-45));
                         dropYellowPixelPose = new Pose2d(25, -89, Math.toRadians(90));
                         dropYellowPixelPosea = new Pose2d(25, -86, Math.toRadians(90));
                         break;
                 }
+                moveBeyondTrussPose = new Pose2d(12,0,0);
                 midwayPose1 = new Pose2d(8, 8, Math.toRadians(0));
                 midwayPose1a = new Pose2d(18, 18, Math.toRadians(90));
                 intakeStack = new Pose2d(64, 19,Math.toRadians(90));
@@ -309,6 +325,7 @@ public class RRAutonomousMeet3 extends LinearOpMode {
         //Move robot to midwayPose1
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
+                        .strafeToLinearHeading(dropPurplePixelPosea.position, dropPurplePixelPosea.heading)
                         .strafeToLinearHeading(midwayPose1.position, midwayPose1.heading)
                         .build());
 
@@ -335,7 +352,7 @@ public class RRAutonomousMeet3 extends LinearOpMode {
                             .build());
 
             safeWaitSeconds(0.2 );
-            wrist.setPosition(TURN_WRIST);
+            wrist.setPosition(TURN_WRIST_FAR);
             safeWaitSeconds(0.3);
         }
 
@@ -363,7 +380,8 @@ public class RRAutonomousMeet3 extends LinearOpMode {
                 drive.actionBuilder(drive.pose)
                         //TODO move backwards then lower wrist
                         // TODO after that, strafe left to park
-                        .splineToLinearHeading(dropYellowPixelPosea, 0)
+                        //.splineToLinearHeading(dropYellowPixelPosea, 0)
+                        .strafeToLinearHeading(dropYellowPixelPosea.position, dropYellowPixelPosea.heading)
                         .strafeToLinearHeading(parkPose.position, parkPose.heading)
                         .build());
     }
@@ -457,7 +475,7 @@ public class RRAutonomousMeet3 extends LinearOpMode {
 
         public double satRectLeftOfCameraMid, satRectRightOfCameraMid;
 
-        public double satRectNone = 45 ; //45.0; //Changed from 40 on 1/2/2024 because of camera issue //Tried with 45 - but BLUE_RIGHT is borderline Original was 40.0
+        public double satRectNone = 48 ; //45.0; //Changed from 40 on 1/2/2024 because of camera issue //Tried with 45 - but BLUE_RIGHT is borderline Original was 40.0
         //public double satRectNoneBlue = 47.5;
 
         public VisionOpenCV(HardwareMap hardwareMap){

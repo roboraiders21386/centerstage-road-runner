@@ -190,7 +190,7 @@ public class RRTeleOpMeet3 extends LinearOpMode {
 
 
 
-            //Setup for RIGGING - takes ARM motor and LEFT motor at 45 deg angle and takes WRIST to UP position
+            //Setup for RIGGING - takes ARM motor and LIFT motor at 45 deg angle and takes WRIST to UP position
             if (gamepad1.b && gamepad1.back && wristServoTimer.milliseconds() > SERVOWAIT) {
                 wrist.setDirection(Servo.Direction.REVERSE);
                 wristServoTimer.reset();
@@ -201,8 +201,8 @@ public class RRTeleOpMeet3 extends LinearOpMode {
                 armMotor.setTargetPosition(1100);
                 armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 telemetry.addData("Up: ", armMotor.getCurrentPosition());
-                liftMotor.setPower(1);
-                armMotor.setPower(1);
+                liftMotor.setPower(0.5);
+                armMotor.setPower(0.5);
              }
 
             if (gamepad1.b && !gamepad1.back && wristServoTimer.milliseconds() > SERVOWAIT) {
