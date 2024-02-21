@@ -47,6 +47,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
+import org.firstinspires.ftc.teamcode.processors.ThreeRectanglesVisionProcessor;
+import org.firstinspires.ftc.teamcode.processors.VisionOpenCVPipeline;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDrive;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.VisionProcessor;
@@ -55,12 +57,14 @@ import org.opencv.core.Mat;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
 
 /**
  * Autonomous  for only vision detection using OpenCV VisionPortal and park
  */
-@Autonomous(name = "RR Auto - League Meet ", group = "00-Autonomous", preselectTeleOp = "RR TeleOp - Meet 3")
-public class RRAutonomousLeague extends LinearOpMode {
+@Autonomous(name = "RR Auto - Regionals ", group = "00-Autonomous", preselectTeleOp = "RR TeleOp - Meet 3")
+public class RRAutonomousRegionals extends LinearOpMode {
 
     public static String TEAM_NAME = "RoboRaiders"; //TODO: Enter team Name
     public static int TEAM_NUMBER = 21386; //TODO: Enter team Number
@@ -69,6 +73,8 @@ public class RRAutonomousLeague extends LinearOpMode {
 
     //Vision parameters
     private VisionOpenCV visionOpenCV;
+
+
 
     public Servo intake;
     public Servo wrist;
@@ -108,6 +114,8 @@ public class RRAutonomousLeague extends LinearOpMode {
     ColorSensor colorSensor;    // Hardware Device Object
     LED RLED, LLED;
 
+    public ThreeRectanglesVisionProcessor vProcessor;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -126,10 +134,12 @@ public class RRAutonomousLeague extends LinearOpMode {
 
         //Key Pay inputs to selecting Starting Position of robot
         selectStartingPosition();
-        telemetry.addData("Selected Starting Position", startPosition);
 
+        telemetry.addData("Selected Starting Position", startPosition);
         //Activate Camera Vision that uses Open CV Vision processor for Team Element detection
         initOpenCV();
+
+
 
         // Wait for the DS start button to be touched.
         telemetry.addLine("Open CV Vision for Red/Blue Team Element Detection");
@@ -286,9 +296,9 @@ public class RRAutonomousLeague extends LinearOpMode {
                 }
                 moveBeyondTrussPose = new Pose2d(12,0,0);
                 midwayPose1 = new Pose2d(8, 8, Math.toRadians(0));
-                midwayPose1a = new Pose2d(18, 18, Math.toRadians(90));
-                intakeStack = new Pose2d(64, 19,Math.toRadians(90));
-                midwayPose2 = new Pose2d(64, -62, Math.toRadians(90));
+                midwayPose1a = new Pose2d(6, 18, Math.toRadians(90));
+                intakeStack = new Pose2d(2, 19,Math.toRadians(90));
+                midwayPose2 = new Pose2d(2, -62, Math.toRadians(90));
                 waitSecondsBeforeDrop = 1; //TODO: Adjust time to wait for alliance partner to move from board
                 parkPose = new Pose2d(50, -84, Math.toRadians(90));
                 break;
@@ -444,10 +454,10 @@ public class RRAutonomousLeague extends LinearOpMode {
         if (startPosition == START_POSITION.RED_LEFT ||
                 startPosition == START_POSITION.BLUE_LEFT) {
             rectLeftOfCameraMid = new Rect(10, 240, 150, 240);
-            rectRightOfCameraMid = new Rect(160, 240, 470, 160);
+            rectRightOfCameraMid = new Rect(160, 285, 470, 100 );
         } else { //RED_RIGHT or BLUE_RIGHT
             rectLeftOfCameraMid = new Rect(10, 240, 470, 160);
-            rectRightOfCameraMid = new Rect(480, 240, 150, 240);
+            rectRightOfCameraMid = new Rect(160, 285, 470, 100 );
         }
     }
 
@@ -481,6 +491,7 @@ public class RRAutonomousLeague extends LinearOpMode {
         public VisionOpenCV(HardwareMap hardwareMap){
             visionPortal = VisionPortal.easyCreateWithDefaults(
                     hardwareMap.get(WebcamName.class, "Webcam 1"), this);
+            //visionPortal = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 1"),vProcessor);
         }
 
         @Override

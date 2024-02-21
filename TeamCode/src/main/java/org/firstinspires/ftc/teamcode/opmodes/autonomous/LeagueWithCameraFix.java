@@ -59,8 +59,8 @@ import org.opencv.imgproc.Imgproc;
 /**
  * Autonomous  for only vision detection using OpenCV VisionPortal and park
  */
-@Autonomous(name = "RR Auto - League Meet ", group = "00-Autonomous", preselectTeleOp = "RR TeleOp - Meet 3")
-public class RRAutonomousLeague extends LinearOpMode {
+@Autonomous(name = "Working League Camera ", group = "00-Autonomous", preselectTeleOp = "RR TeleOp - Meet 3")
+public class LeagueWithCameraFix extends LinearOpMode {
 
     public static String TEAM_NAME = "RoboRaiders"; //TODO: Enter team Name
     public static int TEAM_NUMBER = 21386; //TODO: Enter team Number
@@ -268,20 +268,20 @@ public class RRAutonomousLeague extends LinearOpMode {
                     case LEFT:
                         dropPurplePixelPose = new Pose2d(21, 8, Math.toRadians(10));
                         dropPurplePixelPosea = new Pose2d(19, 6, Math.toRadians(10));
-                        dropYellowPixelPose = new Pose2d(40, -89, Math.toRadians(90));
-                        dropYellowPixelPosea = new Pose2d(40, -86, Math.toRadians(90));
+                        dropYellowPixelPose = new Pose2d(40, -88, Math.toRadians(90));
+                        dropYellowPixelPosea = new Pose2d(40, -85, Math.toRadians(90));
                         break;
                     case MIDDLE:
                         dropPurplePixelPose = new Pose2d(26, -3, Math.toRadians(0));
                         dropPurplePixelPosea = new Pose2d(24, -3, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(33, -89, Math.toRadians(90));
-                        dropYellowPixelPosea = new Pose2d(33, -86, Math.toRadians(90));
+                        dropYellowPixelPose = new Pose2d(33, -88, Math.toRadians(90));
+                        dropYellowPixelPosea = new Pose2d(33, -85, Math.toRadians(90));
                         break;
                     case RIGHT:
                         dropPurplePixelPose = new Pose2d(27, -5, Math.toRadians(-45));
                         dropPurplePixelPosea = new Pose2d(25, -7, Math.toRadians(-45));
-                        dropYellowPixelPose = new Pose2d(25, -89, Math.toRadians(90));
-                        dropYellowPixelPosea = new Pose2d(25, -86, Math.toRadians(90));
+                        dropYellowPixelPose = new Pose2d(25, -88, Math.toRadians(90));
+                        dropYellowPixelPosea = new Pose2d(25, -85, Math.toRadians(90));
                         break;
                 }
                 moveBeyondTrussPose = new Pose2d(12,0,0);
@@ -444,10 +444,10 @@ public class RRAutonomousLeague extends LinearOpMode {
         if (startPosition == START_POSITION.RED_LEFT ||
                 startPosition == START_POSITION.BLUE_LEFT) {
             rectLeftOfCameraMid = new Rect(10, 240, 150, 240);
-            rectRightOfCameraMid = new Rect(160, 240, 470, 160);
+            rectRightOfCameraMid = new Rect(160, 285, 470, 100 );
         } else { //RED_RIGHT or BLUE_RIGHT
             rectLeftOfCameraMid = new Rect(10, 240, 470, 160);
-            rectRightOfCameraMid = new Rect(480, 240, 150, 240);
+            rectRightOfCameraMid = new Rect(160, 285, 470, 100 );
         }
     }
 
