@@ -38,6 +38,7 @@ import android.graphics.Paint;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -47,6 +48,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
+import org.firstinspires.ftc.teamcode.processors.ThreeRectanglesVisionProcessor;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDrive;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.VisionProcessor;
@@ -59,8 +61,9 @@ import org.opencv.imgproc.Imgproc;
 /**
  * Autonomous  for only vision detection using OpenCV VisionPortal and park
  */
-@Autonomous(name = "Working League Camera ", group = "00-Autonomous", preselectTeleOp = "RR TeleOp - Meet 3")
-public class LeagueWithCameraFix extends LinearOpMode {
+@Disabled
+@Autonomous(name = "RR Auto - Regionals ", group = "00-Autonomous", preselectTeleOp = "RR TeleOp - Meet 3")
+public class LeagueXTRATest extends LinearOpMode {
 
     public static String TEAM_NAME = "RoboRaiders"; //TODO: Enter team Name
     public static int TEAM_NUMBER = 21386; //TODO: Enter team Number
@@ -69,6 +72,8 @@ public class LeagueWithCameraFix extends LinearOpMode {
 
     //Vision parameters
     private VisionOpenCV visionOpenCV;
+
+
 
     public Servo intake;
     public Servo wrist;
@@ -108,6 +113,8 @@ public class LeagueWithCameraFix extends LinearOpMode {
     ColorSensor colorSensor;    // Hardware Device Object
     LED RLED, LLED;
 
+    public ThreeRectanglesVisionProcessor vProcessor;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -126,10 +133,12 @@ public class LeagueWithCameraFix extends LinearOpMode {
 
         //Key Pay inputs to selecting Starting Position of robot
         selectStartingPosition();
-        telemetry.addData("Selected Starting Position", startPosition);
 
+        telemetry.addData("Selected Starting Position", startPosition);
         //Activate Camera Vision that uses Open CV Vision processor for Team Element detection
         initOpenCV();
+
+
 
         // Wait for the DS start button to be touched.
         telemetry.addLine("Open CV Vision for Red/Blue Team Element Detection");
@@ -268,27 +277,27 @@ public class LeagueWithCameraFix extends LinearOpMode {
                     case LEFT:
                         dropPurplePixelPose = new Pose2d(21, 8, Math.toRadians(10));
                         dropPurplePixelPosea = new Pose2d(19, 6, Math.toRadians(10));
-                        dropYellowPixelPose = new Pose2d(40, -88, Math.toRadians(90));
-                        dropYellowPixelPosea = new Pose2d(40, -85, Math.toRadians(90));
+                        dropYellowPixelPose = new Pose2d(40, -89, Math.toRadians(90));
+                        dropYellowPixelPosea = new Pose2d(40, -86, Math.toRadians(90));
                         break;
                     case MIDDLE:
                         dropPurplePixelPose = new Pose2d(26, -3, Math.toRadians(0));
                         dropPurplePixelPosea = new Pose2d(24, -3, Math.toRadians(0));
-                        dropYellowPixelPose = new Pose2d(33, -88, Math.toRadians(90));
-                        dropYellowPixelPosea = new Pose2d(33, -85, Math.toRadians(90));
+                        dropYellowPixelPose = new Pose2d(33, -89, Math.toRadians(90));
+                        dropYellowPixelPosea = new Pose2d(33, -86, Math.toRadians(90));
                         break;
                     case RIGHT:
                         dropPurplePixelPose = new Pose2d(27, -5, Math.toRadians(-45));
                         dropPurplePixelPosea = new Pose2d(25, -7, Math.toRadians(-45));
-                        dropYellowPixelPose = new Pose2d(25, -88, Math.toRadians(90));
-                        dropYellowPixelPosea = new Pose2d(25, -85, Math.toRadians(90));
+                        dropYellowPixelPose = new Pose2d(25, -89, Math.toRadians(90));
+                        dropYellowPixelPosea = new Pose2d(25, -86, Math.toRadians(90));
                         break;
                 }
                 moveBeyondTrussPose = new Pose2d(12,0,0);
                 midwayPose1 = new Pose2d(8, 8, Math.toRadians(0));
-                midwayPose1a = new Pose2d(18, 18, Math.toRadians(90));
-                intakeStack = new Pose2d(64, 19,Math.toRadians(90));
-                midwayPose2 = new Pose2d(64, -62, Math.toRadians(90));
+                midwayPose1a = new Pose2d(6, 18, Math.toRadians(90));
+                intakeStack = new Pose2d(2, 19,Math.toRadians(90));
+                midwayPose2 = new Pose2d(2, -62, Math.toRadians(90));
                 waitSecondsBeforeDrop = 1; //TODO: Adjust time to wait for alliance partner to move from board
                 parkPose = new Pose2d(50, -84, Math.toRadians(90));
                 break;
@@ -481,6 +490,7 @@ public class LeagueWithCameraFix extends LinearOpMode {
         public VisionOpenCV(HardwareMap hardwareMap){
             visionPortal = VisionPortal.easyCreateWithDefaults(
                     hardwareMap.get(WebcamName.class, "Webcam 1"), this);
+            //visionPortal = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 1"),vProcessor);
         }
 
         @Override

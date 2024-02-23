@@ -234,28 +234,29 @@ public class RRTeleOpRegionals extends LinearOpMode {
 
             // INTAKE - Grab CLAW Closing
             if (gamepad1.right_bumper) {
-                innerIntake.setDirection(Servo.Direction.REVERSE);
-                innerIntake.setPosition(0.3);
-                sleep(50);
+                innerIntake.setDirection(Servo.Direction.FORWARD);
+                innerIntake.setPosition(1);
+                sleep(100);
                 intake.setDirection(Servo.Direction.REVERSE);
-                intake.setPosition(0.3); // made it 1 on 1/1/2024
+                intake.setPosition(0.1); // made it 1 on 1/1/2024
                 sleep(300);
             }
             // INTAKE - Release CLAW Opening
             if (gamepad1.left_bumper) {
                 intake.setDirection(Servo.Direction.REVERSE);
-                intake.setPosition(0.5); // made it 1 on 1/1/2024
+                intake.setPosition(0.4); // made it 1 on 1/1/2024
             }
             //intake.setPosition(0);  //TODO - find out why was this setup here
 
             //inner intake releasing
             if (gamepad1.left_trigger > 0) {
-                //innerIntake.setDirection(Servo.Direction.FORWARD);
-                innerIntake.setPosition(0.5);
+                innerIntake.setDirection(Servo.Direction.FORWARD);
+                innerIntake.setPosition(0.05);
                 sleep(50);
                 intake.setDirection(Servo.Direction.REVERSE);
-                intake.setPosition(0.5); // made it 1 on 1/1/2024
+                intake.setPosition(0.4); // made it 1 on 1/1/2024
                 sleep(300);
+                telemetry.addData("Inner Intake", "should open!");
             }
 
 
@@ -318,6 +319,11 @@ public class RRTeleOpRegionals extends LinearOpMode {
             telemetry.addData("-----------------WRIST SERVO----------------------","");
             telemetry.addData("Current Wrist servo pos: ", wrist.getPosition());
             telemetry.addData("Target Wrist servo pos: ", targetServoPosition);
+
+            //Intake Servo position
+            telemetry.addData("-----------------INTAKE SERVOS----------------------","");
+            telemetry.addData("Current Outer Claw servo pos: ", intake.getPosition());
+            telemetry.addData("Current Inner Claw servo pos: ", innerIntake.getPosition());
 
 
             telemetry.update();
